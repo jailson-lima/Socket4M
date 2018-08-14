@@ -20,7 +20,7 @@ public class Worker extends EventEmitter implements Runnable {
     private final List<Message> send = new ArrayList<>();
     private boolean running = false;
 
-    Worker(Client client, Socket socket) {
+    public Worker(Client client, Socket socket) {
         this.client = client;
         this.socket = socket;
     }
