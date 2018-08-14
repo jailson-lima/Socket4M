@@ -11,27 +11,23 @@ import static me.devnatan.socket4m.util.DebugUtil.debug;
 public class MessageHandler {
 
     public void handle(Client client) throws IOException {
-        read(client.getWorker().getSocket().getInputStream(), (message) -> {
-            debug("Reading message from server: " + message);
-        });
+        read(client.getWorker().getSocket().getInputStream(), (message) -> {});
     }
 
-    public void write(Message message, OutputStream out, Runnable before, BiConsumer<Message, Long> complete) throws IOException {
-        long time = System.currentTimeMillis();
-        before.run();
+    private void write(Message message, OutputStream out, BiConsumer<Message, Long> complete) throws IOException {
+        long t = System.currentTimeMillis();
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF-8");
         osw.write(message.to());
         osw.flush();
-        complete.accept(message, System.currentTimeMillis() - time);
+        complete.accept(message, System.currentTimeMillis() - t);
     }
 
-    public static void read(InputStream in, Consumer<Message> consumer) throws IOException {
-        char[] buffer = new char[2048];
-        int charsRead = 0;
+    private void read(InputStream in, Consumer<Message> consumer) throws IOException {
+        char[] b = new char[2048];
+        int c;
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        while ((charsRead = br.read(buffer)) != -1) {
-            String message = new String(buffer).substring(0, charsRead);
-            consumer.accept(Message.from(message));
+        while((c = br.read(b)) != -1) {
+            consumer.accept(Message.from(new String(b).substring(0, c)));
         }
     }
 

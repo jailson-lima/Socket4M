@@ -16,9 +16,7 @@ public class Client extends EventEmitter {
     private int port;
     private int timeout = -1;
     private Worker worker;
-    private final Map<SocketOption, Object> options = new HashMap<>();
-    private boolean canDebug = true;
-    private boolean canPrintErrors = true;
+    private final Map<String, Object> options = new HashMap<>();
 
     /**
      * Address of the server to connect to
@@ -88,48 +86,16 @@ public class Client extends EventEmitter {
      * Get socket channel connection map options.
      * @return Map
      */
-    public Map<SocketOption, Object> getOptions() {
+    public Map<String, Object> getOptions() {
         return options;
     }
 
     /**
-     * If you can see debug messages on console.
-     * @return
-     */
-    public boolean isCanDebug() {
-        return canDebug;
-    }
-
-    /**
-     * Set if you can see debug messages on console.
-     * @param canDebug = if you can see
-     */
-    public void setCanDebug(boolean canDebug) {
-        this.canDebug = canDebug;
-    }
-
-    /**
-     * If you can see stack trace messages on console.
-     * @return boolean
-     */
-    public boolean isCanPrintErrors() {
-        return canPrintErrors;
-    }
-
-    /**
-     * Set if you can see stack trace messages on console.
-     * @param canPrintErrors = if you can see
-     */
-    public void setCanPrintErrors(boolean canPrintErrors) {
-        this.canPrintErrors = canPrintErrors;
-    }
-
-    /**
      * Add an option to the socket channel connection options map.
-     * @param option = the {@link StandardSocketOptions} option
+     * @param option = option key
      * @param value = option object value
      */
-    public void addOption(SocketOption option, Object value) {
+    public void addOption(String option, Object value) {
         options.put(option, value);
     }
 
@@ -147,21 +113,25 @@ public class Client extends EventEmitter {
         if (timeout != -1)
             socket.setSoTimeout(timeout);
         if (options.size() > 0) {
-            /* options.forEach((so, v) -> {
-                if (!so.name().equals("SO_TIMEOUT")) {
-                    try {
-                        socket.getChannel().setOption(so, v);
-                    } catch (IOException e) {
-                        if (canDebug)
-                            e.printStackTrace();
-                        emit("error", new Arguments.Builder()
-                                .addArgument(Argument.of("throwable", e))
-                                .addArgument(Argument.of("reason", SocketCloseReason.IO))
-                                .build()
-                        );
-                    }
+            for(Map.Entry<String, Object> entry : options.entrySet()) {
+                String k = entry.getKey();
+                Object v = entry.getValue();
+                switch (k) {
+                    case "KEEP_ALIVE":
+                        socket.setKeepAlive((boolean) v);
+                    case "REUSE_ADDRESS":
+                        socket.setReuseAddress((boolean) v);
+                    case "TCP_NO_DELAY":
+                        socket.setTcpNoDelay((boolean) v);
+                    case "OUT_OF_BAND_DATA":
+                        // IMPORTANT!
+                        socket.setOOBInline((boolean) v);
+                    case "WRITE_BUFFER_SIZE":
+                        socket.setSendBufferSize((int) v);
+                    case "READ_BUFFER_SIZE":
+                        socket.setReceiveBufferSize((int) v);
                 }
-            }); */
+            }
         }
         worker = new Worker(this, socket);
         worker.work(now);
