@@ -19,8 +19,9 @@ public class Worker extends EventEmitter implements Runnable {
     private final Socket socket;
     private final List<Message> send = new ArrayList<>();
     private boolean running = false;
+    private final MessageHandler messageHandler = new MessageHandler();
 
-    public Worker(Client client, Socket socket) {
+    Worker(Client client, Socket socket) {
         this.client = client;
         this.socket = socket;
     }
@@ -44,8 +45,6 @@ public class Worker extends EventEmitter implements Runnable {
     public void setRunning(boolean running) {
         this.running = running;
     }
-
-    private final MessageHandler messageHandler = new MessageHandler();
 
     public void run() {
         try {
@@ -81,7 +80,7 @@ public class Worker extends EventEmitter implements Runnable {
         client.emit("connect", new Arguments.Builder()
                 .addArgument(Argument.of("time", System.currentTimeMillis() - time))
                 .build());
-        new Thread(this).start();
+        new Thread(this, "Client").start();
     }
 
 }

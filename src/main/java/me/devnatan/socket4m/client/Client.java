@@ -1,14 +1,20 @@
 package me.devnatan.socket4m.client;
 
 import it.shadow.events4j.EventEmitter;
+import it.shadow.events4j.argument.Argument;
+import it.shadow.events4j.argument.Arguments;
+import me.devnatan.socket4m.Core;
+import me.devnatan.socket4m.client.enums.SocketCloseReason;
 import me.devnatan.socket4m.client.message.Message;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketOption;
 import java.net.StandardSocketOptions;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Client extends EventEmitter {
 
@@ -102,39 +108,63 @@ public class Client extends EventEmitter {
     /**
      * Connect to the server
      */
-    public void connect() throws IOException {
+    public void connect() {
         if(address == null)
             throw new IllegalArgumentException("Server address cannot be null");
         if(port == -1)
             throw new IllegalArgumentException("Server port must be defined");
 
-        long now = System.currentTimeMillis();
-        Socket socket = new Socket(address, port);
-        if (timeout != -1)
-            socket.setSoTimeout(timeout);
-        if (options.size() > 0) {
-            for(Map.Entry<String, Object> entry : options.entrySet()) {
-                String k = entry.getKey();
-                Object v = entry.getValue();
-                switch (k) {
-                    case "KEEP_ALIVE":
-                        socket.setKeepAlive((boolean) v);
-                    case "REUSE_ADDRESS":
-                        socket.setReuseAddress((boolean) v);
-                    case "TCP_NO_DELAY":
-                        socket.setTcpNoDelay((boolean) v);
-                    case "OUT_OF_BAND_DATA":
-                        // IMPORTANT!
-                        socket.setOOBInline((boolean) v);
-                    case "WRITE_BUFFER_SIZE":
-                        socket.setSendBufferSize((int) v);
-                    case "READ_BUFFER_SIZE":
-                        socket.setReceiveBufferSize((int) v);
+        try {
+            long now = System.currentTimeMillis();
+            Socket socket = new Socket(address, port);
+            if (timeout != -1)
+                socket.setSoTimeout(timeout);
+            if (options.size() > 0) {
+                for (Map.Entry<String, Object> entry : options.entrySet()) {
+                    String k = entry.getKey();
+                    Object v = entry.getValue();
+                    switch (k) {
+                        case "KEEP_ALIVE":
+                            socket.setKeepAlive((boolean) v);
+                            break;
+                        case "REUSE_ADDRESS":
+                            socket.setReuseAddress((boolean) v);
+                            break;
+                        case "TCP_NO_DELAY":
+                            socket.setTcpNoDelay((boolean) v);
+                            break;
+                        case "OUT_OF_BAND_DATA":
+                            // IMPORTANT!
+                            socket.setOOBInline((boolean) v);
+                            break;
+                        case "WRITE_BUFFER_SIZE":
+                            socket.setSendBufferSize((int) v);
+                            break;
+                        case "READ_BUFFER_SIZE":
+                            socket.setReceiveBufferSize((int) v);
+                            break;
+                        default:
+                            Core c = Core.getInstance();
+                            if(c != null)
+                                c.log(Level.WARNING, "Socket client option " + k + " not found.");
+                    }
                 }
             }
+            worker = new Worker(this, socket);
+            worker.work(now);
+        } catch (ConnectException e) {
+            emit("error", new Arguments.Builder()
+                    .addArgument(Argument.of("throwable", e))
+                    .addArgument(Argument.of("reason", SocketCloseReason.REFUSED))
+                    .build()
+            );
+        } catch (IOException e) {
+            emit("error", new Arguments.Builder()
+                    .addArgument(Argument.of("throwable", e))
+                    .addArgument(Argument.of("reason", SocketCloseReason.IO))
+                    .build()
+            );
         }
-        worker = new Worker(this, socket);
-        worker.work(now);
     }
 
     /**

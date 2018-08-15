@@ -49,8 +49,8 @@ public class Message extends HashMap<String, Object> {
         return gson.fromJson(s, type);
     }
 
-    public static Message create() {
-        return new Message();
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
@@ -58,12 +58,12 @@ public class Message extends HashMap<String, Object> {
         private String[] keys;
         private Object[] values;
 
-        public Message.Builder setKeys(String... keys) {
+        public Message.Builder keys(String... keys) {
             this.keys = keys;
             return this;
         }
 
-        public Message.Builder setValue(Object... values) {
+        public Message.Builder values(Object... values) {
             this.values = values;
             return this;
         }

@@ -1,5 +1,7 @@
 package me.devnatan.socket4m;
 
+import me.devnatan.socket4m.client.message.MessageHandler;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +10,7 @@ public class Core {
     private static Core instance;
     private Logger logger;
     private boolean debug;
+    private MessageHandler messageHandler;
 
     public Logger getLogger() {
         return logger;
@@ -38,12 +41,20 @@ public class Core {
         this.debug = debug;
     }
 
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
     public static Core getInstance() {
         return instance;
     }
 
-    public void setInstance(Core instance) {
-        if(instance != null)
+    public static void setInstance(Core instance) {
+        if(Core.instance != null)
             throw new IllegalArgumentException("Core is already set.");
         Core.instance = instance;
     }
