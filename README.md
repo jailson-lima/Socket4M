@@ -9,33 +9,30 @@ Cliente socket para interação com um servidor de protocolo TCP.
 Ainda não implementado
   
 # Exemplos
-### Core
-Atribuindo instância:
-```java
-Core core = new Core();
-```
+### Utilities
+A classe [Utilities](https://github.com/MotoCrack/Socket4M/blob/master/src/main/java/me/devnatan/socket4m/client/Utilities.java) são utilidades do cliente que podem ser usadas para auxiliamento, incluindo recebimento de mensagens.
 
-Ative a opção `debug` se quiser ver detalhes no console.
 ```java
-core.setDebug(true);
+Utilities utilities = new Utilities();
+
+// Ative a opção "debug" para ver detalhes no console.
+utilities.setDebug(true);
 ```
 
 Adicione um manipulador de mensagens.
 O número `100` no `ArrayBlockingQueue` é a capacidade da fila.
 Outros tipos de `Queue` podem ser usados, saiba mais em [implementações de BlockingQueue](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html).
 ```java
-core.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
-```
-
-E por fim defina a instância.
-```java
-Core.setInstance(core);
+utilities.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
 ```
 
 ### Cliente
 Criando cliente:
 ```java
 Client client = new Client();
+
+// Definida as utilidades do cliente.
+client.setUtilities(utilities);
 ```
   
 ## Precisando de ajuda?
