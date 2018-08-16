@@ -63,7 +63,7 @@ client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
 
 ### Estabelecendo conexão
 Atribua um endereço de IP ao cliente com ou sem porta.\
-A porta atribuida ao cliente por padrão é `8080`.
+A porta atribuida ao cliente por padrão é `8080`.\
 **OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
   
 ## Precisando de ajuda?
