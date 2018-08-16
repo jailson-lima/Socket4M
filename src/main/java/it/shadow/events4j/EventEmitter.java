@@ -33,7 +33,6 @@ public class EventEmitter {
         eventListeners.add(listener);
 
         return this;
-
     }
 
     /**

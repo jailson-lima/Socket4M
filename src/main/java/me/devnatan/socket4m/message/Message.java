@@ -19,13 +19,10 @@ public class Message {
 
     private Message(String[] keys, Object... values) {
         this();
-        if(keys == null)
-            throw new NullPointerException("Socket message keys cannot be null");
-        if(values == null)
-            throw new NullPointerException("Socket message values cannot be null");
-
-        for(int i = 0; i < Math.min(keys.length, values.length); i++) {
-            this.values.put(keys[i], values[i]);
+        if(keys != null && keys.length > 0 && values != null && values.length > 0) {
+            for (int i = 0; i < Math.min(keys.length, values.length); i++) {
+                this.values.put(keys[i], values[i]);
+            }
         }
     }
 

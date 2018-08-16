@@ -4,7 +4,6 @@ import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
 import me.devnatan.socket4m.enums.SocketCloseReason;
-import me.devnatan.socket4m.enums.SocketOpenReason;
 import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
 import me.devnatan.socket4m.message.Message;
 import me.devnatan.socket4m.message.MessageHandler;
@@ -22,7 +21,7 @@ public class Worker extends EventEmitter implements Runnable {
     private Socket socket;
     private final List<Message> send = new ArrayList<>();
     private boolean running = false;
-    private final MessageHandler messageHandler = new MessageHandler();
+    private MessageHandler messageHandler;
     private boolean online = false;
 
     Worker(Client client) {
@@ -58,6 +57,14 @@ public class Worker extends EventEmitter implements Runnable {
         this.running = running;
     }
 
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
     public boolean isOnline() {
         return online;
     }
@@ -72,7 +79,7 @@ public class Worker extends EventEmitter implements Runnable {
         try {
             try {
                 while (running && online) {
-                    messageHandler.handle(client);
+                    if(messageHandler != null) messageHandler.handle(client);
                 }
             } catch (SocketTimeoutException e) {
                 online = false;
@@ -111,7 +118,7 @@ public class Worker extends EventEmitter implements Runnable {
     public void work(long time) {
         running = true;
         client.emit("connect", new Arguments.Builder()
-                .addArgument(Argument.of("reason", SocketOpenReason.UNDEFINED))
+                .addArgument(Argument.of("reason", null))
                 .build());
         new Thread(this, "Client").start();
     }

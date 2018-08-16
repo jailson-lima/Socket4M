@@ -6,6 +6,7 @@ import it.shadow.events4j.argument.Arguments;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.handler.Handler;
 import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -26,6 +27,7 @@ public class Client extends EventEmitter {
     private final Map<String, Object> options = new HashMap<>();
     private final List<Handler> handlers = new LinkedList<>();
     private Utilities utilities;
+    private MessageHandler messageHandler;
 
     /**
      * Address of the server to connect to
@@ -135,6 +137,15 @@ public class Client extends EventEmitter {
 
     public void setUtilities(Utilities utilities) {
         this.utilities = utilities;
+        messageHandler = utilities.getMessageHandler();
+    }
+
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
     }
 
     public void log(Level level, String message) {
@@ -184,6 +195,7 @@ public class Client extends EventEmitter {
                 }
             }
             worker = new Worker(this, socket);
+            worker.setMessageHandler(messageHandler);
             worker.setOnline(true);
             worker.work(now);
         } catch (ConnectException e) {

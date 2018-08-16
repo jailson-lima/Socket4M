@@ -28,11 +28,16 @@ public class Example {
 
         // EVENTS
         client.on("message", arguments -> {
-            Message message = (Message) arguments.get("data").getValue();
+            Message message = (Message) arguments.value("data");
             client.log(Level.INFO, "Message from the server:");
             client.log(Level.INFO, "  - Text: " + message.getText());
             client.log(Level.INFO, "  - Map: " + message.getValues());
             client.log(Level.INFO, "  - JSON: " + message.json());
+            client.write(Message.builder()
+                    .text("Olá")
+                    .append(" quem está do outro lado")
+                    .append(" deste lindo servidor?")
+                    .build());
         });
 
         client.on("error", arguments -> {

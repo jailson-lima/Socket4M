@@ -43,6 +43,13 @@ public final class Arguments {
                 });
     }
 
+    public Object value(String name) {
+        Argument argument = get(name);
+        if(argument != null)
+            return argument.getValue();
+        return null;
+    }
+
     /**
      * Return the number of argument
      */
