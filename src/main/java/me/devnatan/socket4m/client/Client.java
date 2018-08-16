@@ -4,16 +4,21 @@ import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
 import me.devnatan.socket4m.Core;
-import me.devnatan.socket4m.client.enums.SocketCloseReason;
-import me.devnatan.socket4m.client.message.Message;
+import me.devnatan.socket4m.enums.SocketCloseReason;
+import me.devnatan.socket4m.enums.SocketOpenReason;
+import me.devnatan.socket4m.handler.Handler;
+import me.devnatan.socket4m.message.Message;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.SocketOption;
-import java.net.StandardSocketOptions;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 public class Client extends EventEmitter {
@@ -21,8 +26,9 @@ public class Client extends EventEmitter {
     private String address;
     private int port;
     private int timeout = -1;
-    private Worker worker;
+    private Worker worker = new Worker(this);
     private final Map<String, Object> options = new HashMap<>();
+    private final List<Handler> handlers = new LinkedList<>();
 
     /**
      * Address of the server to connect to
@@ -106,6 +112,27 @@ public class Client extends EventEmitter {
     }
 
     /**
+     * Manipulators intended for a specific method or function and called when necessary.
+     * @return List
+     */
+    public List<Handler> getHandlers() {
+        return handlers;
+    }
+
+    /**
+     * Adds a standard handler or one that implements {@link Handler} the list of handlers.
+     * @param handler = handler
+     * @return boolean
+     */
+    public boolean addHandler(Handler handler) {
+        return handlers.add(handler);
+    }
+
+    public void handleIf(Predicate<Handler> predicte) {
+        handlers.stream().filter(predicte).findFirst().ifPresent(Handler::handle);
+    }
+
+    /**
      * Connect to the server
      */
     public void connect() {
@@ -151,6 +178,7 @@ public class Client extends EventEmitter {
                 }
             }
             worker = new Worker(this, socket);
+            worker.setOnline(true);
             worker.work(now);
         } catch (ConnectException e) {
             emit("error", new Arguments.Builder()

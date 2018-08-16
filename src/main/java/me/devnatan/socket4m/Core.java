@@ -1,6 +1,6 @@
 package me.devnatan.socket4m;
 
-import me.devnatan.socket4m.client.message.MessageHandler;
+import me.devnatan.socket4m.message.MessageHandler;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +28,7 @@ public class Core {
 
         if(level == Level.SEVERE) {
             System.err.println(message);
+            return;
         }
 
         System.out.println(message);

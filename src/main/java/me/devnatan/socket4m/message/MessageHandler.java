@@ -1,12 +1,10 @@
-package me.devnatan.socket4m.client.message;
+package me.devnatan.socket4m.message;
 
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
 import me.devnatan.socket4m.client.Client;
-import me.devnatan.socket4m.client.enums.SocketCloseReason;
 
 import java.io.*;
-import java.util.ArrayDeque;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -62,16 +60,13 @@ public class MessageHandler {
     public void handle(Client client) throws IOException {
         if(!writeQueue.isEmpty())
             write(writeQueue.poll(), client.getWorker().getSocket().getOutputStream());
-        read(client.getWorker().getSocket().getInputStream(), (message, time) -> {
-            process(message, time, client);
-        });
+        read(client.getWorker().getSocket().getInputStream(), (message) -> process(message, client));
     }
 
-    private void process(Message message, long time, Client client) {
+    private void process(Message message, Client client) {
         readQueue.offer(message);
         client.emit("message", new Arguments.Builder()
                 .addArgument(Argument.of("data", message))
-                .addArgument(Argument.of("time", time))
                 .build()
         );
     }
@@ -82,13 +77,12 @@ public class MessageHandler {
         osw.flush();
     }
 
-    private void read(InputStream in, BiConsumer<Message, Long> consumer) throws IOException {
-        long t = System.currentTimeMillis();
+    private void read(InputStream in, Consumer<Message> consumer) throws IOException {
         char[] b = new char[buffer];
         int c;
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         while((c = br.read(b)) != -1) {
-            consumer.accept(Message.from(new String(b).substring(0, c)), System.currentTimeMillis() - t);
+            consumer.accept(Message.from(new String(b).substring(0, c)));
         }
     }
 

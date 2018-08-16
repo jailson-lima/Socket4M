@@ -1,10 +1,14 @@
 package me.devnatan.socket4m;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import me.devnatan.socket4m.client.Client;
-import me.devnatan.socket4m.client.message.Message;
-import me.devnatan.socket4m.client.message.MessageHandler;
+import me.devnatan.socket4m.enums.SocketCloseReason;
+import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
+import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.message.MessageHandler;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.logging.Level;
 
 public class Example {
 
@@ -18,12 +22,12 @@ public class Example {
         // CLIENT
         Client client = new Client();
         client.addOption("KEEP_ALIVE", true);
+        client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 3));
         client.setAddress("localhost");
-        client.setPort(8080);
-        client.setTimeout(5000);
+        client.setPort(4434);
 
         client.on("connect", arguments -> {
-
+            core.log(Level.INFO, "Connected successfully.");
         });
 
         client.on("disconnect", arguments -> {
@@ -36,6 +40,16 @@ public class Example {
 
         client.on("error", arguments -> {
             Throwable throwable = (Throwable) arguments.get("throwable").getValue();
+            SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
+            if(reason == SocketCloseReason.RESET) {
+                core.log(Level.SEVERE, "Server connection closed, trying to re-connect [" + throwable.getClass().getSimpleName() + "]...");
+                return;
+            }
+
+            if(reason == SocketCloseReason.REFUSED) {
+                core.log(Level.SEVERE, "Cannot connect to the server.");
+                return;
+            }
 
             throwable.printStackTrace();
         });
