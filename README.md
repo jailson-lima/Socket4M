@@ -136,9 +136,9 @@ client.getWorker().on("end", args -> {
 ```java
 client.on("message", args -> {
   Message message = (Message) args.value("message");
-  client.log(Level.INFO, "Message from the server:");
-  client.log(Level.INFO, "  - Text: " + message.getText());
-  client.log(Level.INFO, "  - Map: " + message.getValues());
+  client.log(Level.INFO, "Mensagem do servidor:");
+  client.log(Level.INFO, "  - Texto: " + message.getText());
+  client.log(Level.INFO, "  - Mapa: " + message.getValues());
   client.log(Level.INFO, "  - JSON: " + message.json());
 });
 ```
@@ -152,12 +152,12 @@ client.on("error", args -> {
   SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
   if(reason == SocketCloseReason.RESET) {
     // Chamado independentemente de haver um manipulador de reconexão.
-    client.log(Level.SEVERE, "Server connection closed, trying to re-connect");
+    client.log(Level.SEVERE, "Conexão com o servidor fechada, tentando reconectar...");
     return;
   }
 
   if(reason == SocketCloseReason.REFUSED) {
-    client.log(Level.SEVERE, "Cannot connect to the server.");
+    client.log(Level.SEVERE, "Não foi possível conectar-se ao servidor.");
     return;
   }
 
