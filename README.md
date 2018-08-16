@@ -35,6 +35,31 @@ client.setUtilities(utilities);
 ```
 
 #### Opções do cliente
+Este cliente suporte algumas opções que a classe [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) tem por padrão.
+```java
+// socket.setKeepAlive(true);
+client.addOption("KEEP_ALIVE", true);
+
+// socket.setOOBInline
+client.addOption("OUT_OF_BAND_DATA", true);
+```
+
+### Manipuladores
+Ainda não há muitos manipuladores disponíveis, somente um.
+O `DefaultReconnectHandler` pode ser usado para conexões que necessitam de suporte para reconectamento automático.
+Ele é chamado quando o servidor deixa de responder ao cliente ou fecha a conexão inesperadamente.
+
+**OBS: `DefaultReconnectHandler` não se aplica a conexões terminadas com motivo `TIMEOUT`**
+```java
+// 3 é o número de tentativas de reconectamento
+client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 3));
+
+// também é possível tentar reconectar somente uma vez não atribuindo nenhum valor
+client.addHandler(new DefaultReconnectHandler(client, client.getWorker()));
+
+// ou atribuindo um valor menor ou igual a zero.
+client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
+```
   
 ## Precisando de ajuda?
   - Meu [Discord](https://discordapp.com) NT#2374
