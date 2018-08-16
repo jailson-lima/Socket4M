@@ -15,10 +15,12 @@ import java.util.Map;
 public class Message {
 
     @Getter @Setter private String text;
-    @Getter private final Map<String, Object> values;
+    @Getter private final Map<String, Object> values = new LinkedHashMap<>();
 
-    private Message() {
-        values = new LinkedHashMap<>();
+    public Message() {}
+
+    public Message(String text) {
+        this.text = text;
     }
 
     /**
@@ -26,11 +28,12 @@ public class Message {
      * @return = serialized message
      */
     public String json() {
+        if(values.isEmpty()) return text;
         try {
             Gson gson = new GsonBuilder().create();
             Type type = new TypeToken<Map>() { }.getType();
 
-            return gson.toJson(this.values, type);
+            return gson.toJson(values, type);
         } catch (com.google.gson.JsonSyntaxException e) {
             return text;
         }

@@ -159,10 +159,10 @@ public class Client extends EventEmitter {
      * Sends a message to the server.
      * This message is an object that is received by the server in JSON format.
      * @param message = the message object (implements Map)
+     * @return "true" if the message have been added to queue.
      */
-    public void write(Message message) {
-        assert messageHandler != null;
-        messageHandler.getWriteQueue().add(message);
+    public boolean write(Message message) {
+        return messageHandler.getWriteQueue().add(message);
     }
 
     /**

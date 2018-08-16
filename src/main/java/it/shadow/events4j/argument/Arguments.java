@@ -35,7 +35,7 @@ public final class Arguments {
                 .filter(argument -> argument.getName().equals(name))
                 .findFirst().<NoSuchElementException>orElseThrow(() -> {
                     throw new NoSuchElementException("Cannot fetch value for argument " + name);
-                });
+                }).getValue();
     }
 
     /**

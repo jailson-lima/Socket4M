@@ -51,6 +51,7 @@ public class DefaultReconnectHandler extends AbstractHandler<SocketOpenReason> {
             client.connect();
         } catch (Exception e) {
             failed.accept(e.getCause(), SocketCloseReason.find(e.getCause()));
+            client.end();
             attempts = 0;
         }
     }

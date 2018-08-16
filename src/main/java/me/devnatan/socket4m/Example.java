@@ -27,6 +27,9 @@ public class Example {
         client.setPort(4434);
 
         // EVENTS
+        client.on("disconnect", arguments -> {
+            client.log(Level.INFO, "Disconnected from the server.");
+        });
         client.on("message", arguments -> {
             Message message = (Message) arguments.value("data");
             client.log(Level.INFO, "Message from the server:");

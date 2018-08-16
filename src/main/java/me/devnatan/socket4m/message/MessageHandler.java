@@ -35,8 +35,10 @@ public class MessageHandler {
     }
 
     public void handle(Client client) throws IOException {
-        if(!writeQueue.isEmpty())
+        if(!writeQueue.isEmpty()) {
             write(writeQueue.poll(), client.getWorker().getSocket().getOutputStream());
+        }
+
         read(client.getWorker().getSocket().getInputStream(), (message) -> process(message, client));
     }
 
