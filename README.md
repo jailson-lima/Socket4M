@@ -19,8 +19,8 @@ Utilities utilities = new Utilities();
 utilities.setDebug(true);
 ```
 
-Adicione um manipulador de mensagens.
-O número `100` no `ArrayBlockingQueue` é a capacidade da fila.
+Adicione um manipulador de mensagens. 
+O número `100` no `ArrayBlockingQueue` é a capacidade da fila.\
 Outros tipos de `Queue` podem ser usados, saiba mais em [implementações de BlockingQueue](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html).
 ```java
 utilities.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
@@ -45,9 +45,9 @@ client.addOption("OUT_OF_BAND_DATA", true);
 ```
 
 ### Manipuladores
-Ainda não há muitos manipuladores disponíveis, somente um.
-O `DefaultReconnectHandler` pode ser usado para conexões que necessitam de suporte para reconectamento automático.
-Ele é chamado quando o servidor deixa de responder ao cliente ou fecha a conexão inesperadamente.
+Ainda não há muitos manipuladores disponíveis, somente um.\
+O `DefaultReconnectHandler` pode ser usado para conexões que necessitam de suporte para reconectamento automático.\
+Ele é chamado quando o servidor deixa de responder ao cliente ou fecha a conexão inesperadamente.\
 
 **OBS: `DefaultReconnectHandler` não se aplica a conexões terminadas com motivo `TIMEOUT`**
 ```java
@@ -60,6 +60,11 @@ client.addHandler(new DefaultReconnectHandler(client, client.getWorker()));
 // ou atribuindo um valor menor ou igual a zero.
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
 ```
+
+### Estabelecendo conexão
+Atribua um endereço de IP ao cliente com ou sem porta.\
+A porta atribuida ao cliente por padrão é `8080`.
+**OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
   
 ## Precisando de ajuda?
   - Meu [Discord](https://discordapp.com) NT#2374
