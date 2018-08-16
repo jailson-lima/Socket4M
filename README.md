@@ -6,6 +6,9 @@ Não utilize nada deste repositório sem ter pleno conhecimento do que está faz
 
 ### Informações
   - Saiba mais sobre a emissão de eventos em [Events4J](https://github.com/theShadow89/Events4J).
+  - Leia sobre [cliente Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
+  - Leia sobre [servidor Socket](https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html)
+  - **Versões do Java menores que 8 não são suportadas.**
   
 ### Assincronismo e processamento paralelo
 Ainda não implementado
