@@ -1,8 +1,10 @@
 # Socket4M
-Cliente socket para interação com um servidor de protocolo TCP.
+Cliente socket para interação com um servidor de protocolo TCP.\n
+
+### Atenção
+Não utilize nada deste repositório sem ter pleno conhecimento do que está fazendo.\n
 
 ### Informações
-  - **NÃO UTILIZE** códigos deste repositório em modo de produção.
   - Saiba mais sobre a emissão de eventos em [Events4J](https://github.com/theShadow89/Events4J).
   
 ### Assincronismo
