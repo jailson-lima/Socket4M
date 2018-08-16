@@ -3,6 +3,8 @@ package me.devnatan.socket4m.message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
@@ -10,8 +12,8 @@ import java.util.Map;
 
 public class Message {
 
-    private String text;
-    private final Map<String, Object> values;
+    @Getter @Setter private String text;
+    @Getter private final Map<String, Object> values;
 
     private Message() {
         values = new LinkedHashMap<>();
@@ -24,18 +26,6 @@ public class Message {
                 this.values.put(keys[i], values[i]);
             }
         }
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Map<String, Object> getValues() {
-        return values;
     }
 
     /**

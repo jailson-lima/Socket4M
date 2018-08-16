@@ -3,6 +3,8 @@ package me.devnatan.socket4m.client;
 import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
+import lombok.Getter;
+import lombok.Setter;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.handler.Handler;
 import me.devnatan.socket4m.message.Message;
@@ -20,132 +22,46 @@ import java.util.logging.Level;
 
 public class Client extends EventEmitter {
 
-    private String address;
-    private int port;
-    private int timeout = -1;
-    private Worker worker = new Worker(this);
-    private final Map<String, Object> options = new HashMap<>();
-    private final List<Handler> handlers = new LinkedList<>();
-    private Utilities utilities;
-    private MessageHandler messageHandler;
+    @Getter @Setter private String address;
+    @Getter @Setter private int port;
+    @Getter @Setter private int timeout;
+    @Getter @Setter private Worker worker;
+    @Getter private final Map<String, Object> options;
+    @Getter private final List<Handler> handlers;
+    @Getter @Setter private Utilities utilities;
+    @Getter @Setter private MessageHandler messageHandler;
 
-    /**
-     * Address of the server to connect to
-     * @return String
-     */
-    public String getAddress() {
-        return address;
+    public Client() {
+        timeout = -1;
+        worker = new Worker(this);
+        options = new HashMap<>();
+        handlers = new LinkedList<>();
     }
 
     /**
-     * Set the address of the server to connect to
-     * @param address = the server address
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
-     * Port of the server to connect to
-     * @return int
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
-     * Set the port of the server to connect to
-     * @param port = the server port
-     */
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    /**
-     * Minimum server response time
-     * @return int
-     */
-    public int getTimeout() {
-        return timeout;
-    }
-
-    /**
-     * Sets the minimum server response time
-     * @param timeout = minimum response time
-     */
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    /**
-     * Responsible for receiving messages from the server.
-     * @return Worker
-     */
-    public Worker getWorker() {
-        return worker;
-    }
-
-    /**
-     * Set the responsible for receiving messages from the server.
-     * @param worker = the worker
-     */
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-    }
-
-    /**
-     * Get socket channel connection map options.
-     * @return Map
-     */
-    public Map<String, Object> getOptions() {
-        return options;
-    }
-
-    /**
-     * Add an option to the socket channel connection options map.
-     * @param option = option key
-     * @param value = option object value
+     * Adds a new option on the client socket.
+     * @param option = the option key
+     * @param value = the option value
      */
     public void addOption(String option, Object value) {
         options.put(option, value);
     }
 
     /**
-     * Manipulators intended for a specific method or function and called when necessary.
-     * @return List
-     */
-    public List<Handler> getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Adds a standard handler or one that implements {@link Handler} the list of handlers.
+     * Adds a new handler
      * @param handler = handler
-     * @return boolean
+     * @return "true" if the handler is added; "false" if that handler already exists in the list.
      */
     public boolean addHandler(Handler handler) {
         return handlers.add(handler);
     }
 
-    public void handleIf(Predicate<Handler> predicte) {
-        handlers.stream().filter(predicte).findFirst().ifPresent(Handler::handle);
-    }
-
-    public Utilities getUtilities() {
-        return utilities;
-    }
-
-    public void setUtilities(Utilities utilities) {
-        this.utilities = utilities;
-        messageHandler = utilities.getMessageHandler();
-    }
-
-    public MessageHandler getMessageHandler() {
-        return messageHandler;
-    }
-
-    public void setMessageHandler(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
+    /**
+     * Calls a handler under a condition
+     * @param predicate = the condition
+     */
+    public void handleIf(Predicate<Handler> predicate) {
+        handlers.stream().filter(predicate).findFirst().ifPresent(Handler::handle);
     }
 
     public void log(Level level, String message) {
@@ -163,6 +79,8 @@ public class Client extends EventEmitter {
             throw new IllegalArgumentException("Server port must be defined");
 
         try {
+            if(messageHandler == null)
+                messageHandler = utilities.getMessageHandler();
             long now = System.currentTimeMillis();
             Socket socket = new Socket(address, port);
             if (timeout != -1)

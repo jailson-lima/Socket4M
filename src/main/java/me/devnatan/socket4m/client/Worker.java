@@ -3,26 +3,24 @@ package me.devnatan.socket4m.client;
 import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
+import lombok.Getter;
+import lombok.Setter;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
-import me.devnatan.socket4m.message.Message;
 import me.devnatan.socket4m.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Worker extends EventEmitter implements Runnable {
 
-    private final Client client;
-    private Socket socket;
-    private final List<Message> send = new ArrayList<>();
-    private boolean running = false;
-    private MessageHandler messageHandler;
-    private boolean online = false;
+    @Getter private final Client client;
+    @Getter @Setter private Socket socket;
+    @Getter @Setter private boolean running = false;
+    @Getter @Setter private MessageHandler messageHandler;
+    @Getter @Setter private boolean online = false;
 
     Worker(Client client) {
         this.client = client;
@@ -31,46 +29,6 @@ public class Worker extends EventEmitter implements Runnable {
     Worker(Client client, Socket socket) {
         this.client = client;
         this.socket = socket;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public List<Message> getSend() {
-        return send;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public MessageHandler getMessageHandler() {
-        return messageHandler;
-    }
-
-    public void setMessageHandler(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
-
-    public boolean isOnline() {
-        return online;
-    }
-
-    public void setOnline(boolean online) {
-        this.online = online;
     }
 
     public void run() {

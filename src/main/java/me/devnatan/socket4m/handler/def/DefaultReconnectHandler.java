@@ -1,5 +1,7 @@
 package me.devnatan.socket4m.handler.def;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.devnatan.socket4m.client.Client;
 import me.devnatan.socket4m.client.Worker;
 import me.devnatan.socket4m.enums.SocketCloseReason;
@@ -11,8 +13,8 @@ import java.util.function.Consumer;
 
 public class DefaultReconnectHandler extends AbstractHandler<SocketOpenReason> {
 
-    private int tries = 0;
-    private int attempts = 0;
+    @Getter @Setter private int tries;
+    @Getter @Setter private int attempts = 0;
 
     public DefaultReconnectHandler(Client client, Worker worker, int tries) {
         super(client, worker);

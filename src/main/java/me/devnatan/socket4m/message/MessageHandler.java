@@ -2,6 +2,8 @@ package me.devnatan.socket4m.message;
 
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
+import lombok.Getter;
+import lombok.Setter;
 import me.devnatan.socket4m.client.Client;
 
 import java.io.*;
@@ -12,9 +14,9 @@ import java.util.function.Consumer;
 
 public class MessageHandler {
 
-    private BlockingQueue<Message> readQueue;
-    private BlockingQueue<Message> writeQueue;
-    private int buffer = 2048;
+    @Getter @Setter private BlockingQueue<Message> readQueue;
+    @Getter @Setter private BlockingQueue<Message> writeQueue;
+    @Getter @Setter private int buffer = 2048;
 
     public MessageHandler() {
         readQueue = new ArrayBlockingQueue<>(10);
@@ -32,30 +34,6 @@ public class MessageHandler {
         writeQueue = new LinkedBlockingDeque<>();
     }
 
-    public BlockingQueue<Message> getReadQueue() {
-        return readQueue;
-    }
-
-    public BlockingQueue<Message> getWriteQueue() {
-        return writeQueue;
-    }
-
-    public void setReadQueue(BlockingQueue<Message> readQueue) {
-        this.readQueue = readQueue;
-    }
-
-    public void setWriteQueue(BlockingQueue<Message> writeQueue) {
-        this.writeQueue = writeQueue;
-    }
-
-    public int getBuffer() {
-        return buffer;
-    }
-
-    public void setBuffer(int buffer) {
-        this.buffer = buffer;
-    }
-
     public void handle(Client client) throws IOException {
         if(!writeQueue.isEmpty())
             write(writeQueue.poll(), client.getWorker().getSocket().getOutputStream());
@@ -63,11 +41,12 @@ public class MessageHandler {
     }
 
     private void process(Message message, Client client) {
-        readQueue.offer(message);
-        client.emit("message", new Arguments.Builder()
-                .addArgument(Argument.of("data", message))
-                .build()
-        );
+        if(readQueue.offer(message)) {
+            client.emit("message", new Arguments.Builder()
+                    .addArgument(Argument.of("data", message))
+                    .build()
+            );
+        }
     }
 
     private void write(Message message, OutputStream out) throws IOException {

@@ -33,11 +33,6 @@ public class Example {
             client.log(Level.INFO, "  - Text: " + message.getText());
             client.log(Level.INFO, "  - Map: " + message.getValues());
             client.log(Level.INFO, "  - JSON: " + message.json());
-            client.write(Message.builder()
-                    .text("Olá")
-                    .append(" quem está do outro lado")
-                    .append(" deste lindo servidor?")
-                    .build());
         });
 
         client.on("error", arguments -> {
