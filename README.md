@@ -62,8 +62,32 @@ client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
 ```
 
 ### Estabelecendo conexão
-Atribua um endereço de IP ao cliente com ou sem porta.\
-A porta atribuida ao cliente por padrão é `8080`.\
+Atribua um endereço de IP ao cliente **COM PORTA**.\
+É possível atribuir endereço e porta diretamente na classe.
+```java
+client.setAddress("127.0.0.1");
+client.setPort(8080);
+```
+
+Ou atribuir somente no momento da conexão.
+```java
+client.connect("127.0.0.1", 8080);
+```
+
+Atribuindo `TIMEOUT` a conexão.
+```java
+// 10 segundos
+client.setTimeout(10000);
+
+// ou
+client.connect("127.0.0.1", 8080, 10000);
+```
+
+É possível conectar atribuindo endereço na classe e não no momento da conexão.
+```java
+// Endereço e porta já estão atribuidos na classe.
+client.connect();
+```
 **OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
   
 ## Precisando de ajuda?
