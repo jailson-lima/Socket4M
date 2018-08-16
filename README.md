@@ -27,13 +27,14 @@ utilities.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
 ```
 
 ### Cliente
-Criando cliente:
 ```java
 Client client = new Client();
 
 // Defina as utilidades do cliente.
 client.setUtilities(utilities);
 ```
+
+#### Opções do cliente
   
 ## Precisando de ajuda?
   - Meu [Discord](https://discordapp.com) NT#2374
