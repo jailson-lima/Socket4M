@@ -22,7 +22,7 @@ core.setDebug(true);
 
 Adicione um manipulador de mensagens.
 O número `100` no `ArrayBlockingQueue` é a capacidade da fila.
-Outros tipos de `Queue` podem ser usados, saiba mais em (implementações de BlockingQueue)[https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html].
+Outros tipos de `Queue` podem ser usados, saiba mais em [implementações de BlockingQueue](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html).
 ```java
 core.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
 ```
