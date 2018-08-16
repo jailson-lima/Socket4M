@@ -31,7 +31,7 @@ Criando cliente:
 ```java
 Client client = new Client();
 
-// Definida as utilidades do cliente.
+// Defina as utilidades do cliente.
 client.setUtilities(utilities);
 ```
   
