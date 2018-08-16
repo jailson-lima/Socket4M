@@ -43,7 +43,7 @@ public class MessageHandler {
     private void process(Message message, Client client) {
         if(readQueue.offer(message)) {
             client.emit("message", new Arguments.Builder()
-                    .addArgument(Argument.of("data", message))
+                    .with(Argument.of("data", message))
                     .build()
             );
         }

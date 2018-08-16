@@ -42,23 +42,23 @@ public class Worker extends EventEmitter implements Runnable {
             } catch (SocketTimeoutException e) {
                 online = false;
                 client.emit("error", new Arguments.Builder()
-                        .addArgument(Argument.of("throwable", e))
-                        .addArgument(Argument.of("reason", SocketCloseReason.TIMEOUT))
+                        .with(Argument.of("throwable", e))
+                        .with(Argument.of("reason", SocketCloseReason.TIMEOUT))
                         .build()
                 );
             } catch (SocketException e) {
                 online = false;
                 client.emit("error", new Arguments.Builder()
-                        .addArgument(Argument.of("throwable", e))
-                        .addArgument(Argument.of("reason", SocketCloseReason.RESET))
+                        .with(Argument.of("throwable", e))
+                        .with(Argument.of("reason", SocketCloseReason.RESET))
                         .build()
                 );
                 client.handleIf(h -> h instanceof DefaultReconnectHandler);
             } catch (IOException e) {
                 online = false;
                 client.emit("error", new Arguments.Builder()
-                        .addArgument(Argument.of("throwable", e))
-                        .addArgument(Argument.of("reason", SocketCloseReason.IO))
+                        .with(Argument.of("throwable", e))
+                        .with(Argument.of("reason", SocketCloseReason.IO))
                         .build()
                 );
                 running = false;
@@ -73,10 +73,10 @@ public class Worker extends EventEmitter implements Runnable {
         }
     }
 
-    public void work(long time) {
+    public void work() {
         running = true;
         client.emit("connect", new Arguments.Builder()
-                .addArgument(Argument.of("reason", null))
+                .with(Argument.of("reason", null))
                 .build());
         new Thread(this, "Client").start();
     }

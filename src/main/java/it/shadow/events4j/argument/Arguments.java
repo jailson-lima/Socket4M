@@ -9,7 +9,8 @@ import java.util.*;
  */
 public final class Arguments {
 
-    @Getter private final List<Argument> arguments;
+    @Getter
+    private final List<Argument> arguments;
 
     private Arguments(List<Argument> arguments) {
         this.arguments = Collections.unmodifiableList(arguments);
@@ -52,12 +53,13 @@ public final class Arguments {
 
         private List<Argument> arguments = new ArrayList<>();
 
-        /**
-         * Add argument to argument.
-         */
-        public Builder with(Argument argument){
+        public Builder with(Argument argument) {
             arguments.add(argument);
             return this;
+        }
+
+        public Builder with(String key, Object value) {
+            return with(Argument.of(key, value));
         }
 
         public Arguments build(){

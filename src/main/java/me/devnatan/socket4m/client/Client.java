@@ -79,12 +79,10 @@ public class Client extends EventEmitter {
             throw new IllegalArgumentException("Server port must be defined");
 
         try {
-            if(messageHandler == null)
-                messageHandler = utilities.getMessageHandler();
-            long now = System.currentTimeMillis();
             Socket socket = new Socket(address, port);
-            if (timeout != -1)
-                socket.setSoTimeout(timeout);
+
+            if(messageHandler == null) messageHandler = utilities.getMessageHandler();
+            if (timeout != -1) socket.setSoTimeout(timeout);
             if (options.size() > 0) {
                 for (Map.Entry<String, Object> entry : options.entrySet()) {
                     String k = entry.getKey();
@@ -112,20 +110,21 @@ public class Client extends EventEmitter {
                     }
                 }
             }
+
             worker = new Worker(this, socket);
             worker.setMessageHandler(messageHandler);
             worker.setOnline(true);
-            worker.work(now);
+            worker.work();
         } catch (ConnectException e) {
             emit("error", new Arguments.Builder()
-                    .addArgument(Argument.of("throwable", e))
-                    .addArgument(Argument.of("reason", SocketCloseReason.REFUSED))
+                    .with(Argument.of("throwable", e))
+                    .with(Argument.of("reason", SocketCloseReason.REFUSED))
                     .build()
             );
         } catch (IOException e) {
             emit("error", new Arguments.Builder()
-                    .addArgument(Argument.of("throwable", e))
-                    .addArgument(Argument.of("reason", SocketCloseReason.IO))
+                    .with(Argument.of("throwable", e))
+                    .with(Argument.of("reason", SocketCloseReason.IO))
                     .build()
             );
         }
@@ -162,7 +161,8 @@ public class Client extends EventEmitter {
      * @param message = the message object (implements Map)
      */
     public void write(Message message) {
-        this.worker.getSend().add(message);
+        assert messageHandler != null;
+        messageHandler.getWriteQueue().add(message);
     }
 
     /**
