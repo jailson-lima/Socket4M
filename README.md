@@ -9,6 +9,7 @@ Cliente socket para interação com um servidor de protocolo TCP.
 Ainda não implementado
   
 ## Exemplos
+# Core
 Atribuindo instância:
 ```java
 Core core = new Core();
@@ -28,7 +29,13 @@ core.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
 
 E por fim defina a instância.
 ```java
-        Core.setInstance(core);
+Core.setInstance(core);
+```
+
+# Cliente
+Criando cliente:
+```java
+Client client = new Client();
 ```
   
 ## Precisando de ajuda?
