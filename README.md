@@ -91,6 +91,76 @@ client.connect("127.0.0.1", 8080, 10000);
 client.connect();
 ```
 **OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
+
+## Eventos
+Quando o cliente estabelece conexão com o servidor
+
+### Sintaxe
+```
+client.on("evento", args -> {
+  // ...
+});
+```
+### Quando conectar
+```java
+client.on("connect", args -> {
+  SocketOpenReason reason = (SocketOpenReason) args.value("reason");
+  if(reason == null); {
+    client.log(Level.INFO, "Primeira conexão com o servidor estabelecida.");
+    return;
+  }
+
+  if(reason == SocketOpenReason.RECONNECT) {
+    client.log(Level.INFO, "Reconectado com o servidor.");
+  }
+});
+```
+
+### Quando desconectar
+Este evento não contém argumentos.
+```java
+client.on("disconnect", args -> {
+  // ...
+});
+
+// ou
+client.getWorker().on("end", args -> {
+
+});
+```
+
+### Ao receber mensagem do servidor
+```java
+client.on("message", args -> {
+  Message message = (Message) args.value("message");
+  client.log(Level.INFO, "Message from the server:");
+  client.log(Level.INFO, "  - Text: " + message.getText());
+  client.log(Level.INFO, "  - Map: " + message.getValues());
+  client.log(Level.INFO, "  - JSON: " + message.json());
+});
+```
+
+### Erros na conexão
+Manipuladores de desconexão são chamados aqui, por exemplo:\n
+O `DefaultDisconnectHandler` é chamado quando o `SocketCloseReason` deste evento é `RESET`.
+```java
+client.on("error", args -> {
+  Throwable throwable = (Throwable) arguments.get("throwable").getValue();
+  SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
+  if(reason == SocketCloseReason.RESET) {
+    // Chamado independentemente de haver um manipulador de reconexão.
+    client.log(Level.SEVERE, "Server connection closed, trying to re-connect");
+    return;
+  }
+
+  if(reason == SocketCloseReason.REFUSED) {
+    client.log(Level.SEVERE, "Cannot connect to the server.");
+    return;
+  }
+
+  ((Throwable) arguments.get("throwable").getValue()).printStackTrace();
+});
+```
   
 ## Precisando de ajuda?
   - Meu [Discord](https://discordapp.com) NT#2374
