@@ -8,7 +8,6 @@ import java.io.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class MessageHandler {
@@ -73,7 +72,7 @@ public class MessageHandler {
 
     private void write(Message message, OutputStream out) throws IOException {
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF-8");
-        osw.write(message.to());
+        osw.write(message.json());
         osw.flush();
     }
 

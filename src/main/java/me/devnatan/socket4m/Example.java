@@ -1,6 +1,5 @@
 package me.devnatan.socket4m;
 
-import com.sun.media.jfxmedia.logging.Logger;
 import me.devnatan.socket4m.client.Client;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
@@ -36,6 +35,10 @@ public class Example {
 
         client.on("message", arguments -> {
             Message message = (Message) arguments.get("data").getValue();
+            core.log(Level.INFO, "Message from the server:");
+            core.log(Level.INFO, "  - Text: " + message.getText());
+            core.log(Level.INFO, "  - Map: " + message.getValues());
+            core.log(Level.INFO, "  - JSON: " + message.json());
         });
 
         client.on("error", arguments -> {
