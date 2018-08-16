@@ -9,7 +9,7 @@ Cliente socket para interação com um servidor de protocolo TCP.
 Ainda não implementado
   
 # Exemplos
-## Core
+### Core
 Atribuindo instância:
 ```java
 Core core = new Core();
@@ -32,7 +32,7 @@ E por fim defina a instância.
 Core.setInstance(core);
 ```
 
-## Cliente
+### Cliente
 Criando cliente:
 ```java
 Client client = new Client();
