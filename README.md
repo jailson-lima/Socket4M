@@ -45,7 +45,7 @@ Este cliente suporte algumas opções que a classe [Socket](https://docs.oracle.
 // socket.setKeepAlive(true);
 client.addOption("KEEP_ALIVE", true);
 
-// socket.setOOBInline
+// socket.setOOBInline(true);
 client.addOption("OUT_OF_BAND_DATA", true);
 ```
 
