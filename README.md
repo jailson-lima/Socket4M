@@ -7,11 +7,11 @@ Não utilize nada deste repositório sem ter pleno conhecimento do que está faz
 ### Informações
   - Saiba mais sobre a emissão de eventos em [Events4J](https://github.com/theShadow89/Events4J).
   
-### Assincronismo
+### Assincronismo e processamento paralelo
 Ainda não implementado
   
 # Exemplos
-### Utilities
+### Utilidades
 A classe [Utilities](https://github.com/MotoCrack/Socket4M/blob/master/src/main/java/me/devnatan/socket4m/client/Utilities.java) são utilidades do cliente que podem ser usadas para auxiliamento, incluindo recebimento de mensagens.
 
 ```java
