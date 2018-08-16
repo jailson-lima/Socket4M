@@ -36,8 +36,8 @@ public class Example {
         });
 
         client.on("error", arguments -> {
-            Throwable throwable = (Throwable) arguments.get("throwable").getValue();
-            SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
+            Throwable throwable = (Throwable) arguments.value("throwable");
+            SocketCloseReason reason = (SocketCloseReason) arguments.value("reason");
             if(reason == SocketCloseReason.RESET) {
                 client.log(Level.SEVERE, "Server connection closed, trying to re-connect [" + throwable.getClass().getSimpleName() + "]...");
                 return;

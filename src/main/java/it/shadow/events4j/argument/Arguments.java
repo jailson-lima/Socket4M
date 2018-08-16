@@ -1,33 +1,18 @@
 package it.shadow.events4j.argument;
 
+import lombok.Getter;
 
 import java.util.*;
-
 
 /**
  * Event Arguments.The argument of an event.
  */
 public final class Arguments {
 
-    private final List<Argument> arguments;
+    @Getter private final List<Argument> arguments;
 
     private Arguments(List<Argument> arguments) {
         this.arguments = Collections.unmodifiableList(arguments);
-    }
-
-    /**
-     * Create {@link Arguments} from a list of {@link Argument}
-     * @param argumentsList list of {Argument}
-     */
-    public static Arguments of(List<Argument> argumentsList){
-        return newBuilder().setArguments(argumentsList.toArray(new Argument[0])).build();
-    }
-
-    /**
-     * Create empty {@link Arguments}
-     */
-    public static Arguments of(){
-        return newBuilder().build();
     }
 
     /**
@@ -35,7 +20,7 @@ public final class Arguments {
      * argument not exist
      * @param name argument name used to identify argument
      */
-    public Argument get(String name) {
+    private Argument get(String name) {
         return arguments.stream()
                 .filter(a -> a.getName().equals(name))
                 .findFirst().<NoSuchElementException>orElseThrow(() -> {
@@ -44,45 +29,39 @@ public final class Arguments {
     }
 
     public Object value(String name) {
-        Argument argument = get(name);
-        if(argument != null)
-            return argument.getValue();
-        return null;
+        return arguments.stream()
+                .filter(Objects::nonNull)
+                .filter(argument -> argument.getName().equals(name))
+                .findFirst().<NoSuchElementException>orElseThrow(() -> {
+                    throw new NoSuchElementException("Cannot fetch value for argument " + name);
+                });
     }
 
     /**
      * Return the number of argument
      */
-    public int size() {
+    public int length() {
         return arguments.size();
     }
 
-    static Builder newBuilder(){
+    static Builder builder(){
         return new Builder();
     }
 
-    public static class Builder{
+    public static class Builder {
 
-        private List<Argument> arguments = new ArrayList<>();;
+        private List<Argument> arguments = new ArrayList<>();
 
         /**
          * Add argument to argument.
          */
-        public Builder addArgument(Argument argument){
+        public Builder with(Argument argument){
             arguments.add(argument);
             return this;
         }
 
         public Arguments build(){
             return new Arguments(arguments);
-        }
-
-        /**
-         * Set argument. Previous set argument will be overwritten
-         */
-        public Builder setArguments(Argument... args) {
-            this.arguments = Arrays.asList(args);
-            return this;
         }
     }
 }

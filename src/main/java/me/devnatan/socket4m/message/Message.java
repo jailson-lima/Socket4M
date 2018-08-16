@@ -3,6 +3,7 @@ package me.devnatan.socket4m.message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Builder
 public class Message {
 
     @Getter @Setter private String text;
@@ -17,15 +19,6 @@ public class Message {
 
     private Message() {
         values = new LinkedHashMap<>();
-    }
-
-    private Message(String[] keys, Object... values) {
-        this();
-        if(keys != null && keys.length > 0 && values != null && values.length > 0) {
-            for (int i = 0; i < Math.min(keys.length, values.length); i++) {
-                this.values.put(keys[i], values[i]);
-            }
-        }
     }
 
     /**
@@ -61,42 +54,5 @@ public class Message {
         } catch (com.google.gson.JsonSyntaxException ignored) { }
 
         return message;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-
-        private String text;
-        private String[] keys;
-        private Object[] values;
-
-        public Message.Builder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Message.Builder append(String text) {
-            if(this.text == null) text(text);
-            else this.text += text;
-
-            return this;
-        }
-
-        public Message.Builder keys(String... keys) {
-            this.keys = keys;
-            return this;
-        }
-
-        public Message.Builder values(Object... values) {
-            this.values = values;
-            return this;
-        }
-
-        public Message build() {
-            return new Message(this.keys, this.values);
-        }
     }
 }

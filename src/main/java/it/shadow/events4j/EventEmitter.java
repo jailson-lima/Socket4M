@@ -31,7 +31,6 @@ public class EventEmitter {
         }
 
         eventListeners.add(listener);
-
         return this;
     }
 
@@ -42,17 +41,13 @@ public class EventEmitter {
      * @param listener function to be executed on emit event
      */
     public EventEmitter once(String event, EventListener listener) {
-
-        EventListener onceEventListener = new EventListener() {
+        on(event, new EventListener() {
             @Override
             public void call(Arguments args) {
                 listener.call(args);
                 removeListener(event,this);
             }
-        };
-
-        on(event,onceEventListener);
-
+        });
         return this;
     }
 
@@ -63,12 +58,9 @@ public class EventEmitter {
      */
     public EventEmitter emit(String event,Arguments args) {
         ConcurrentLinkedQueue<EventListener> eventListeners = listeners.get(event);
-        //there are listener for event?
-        if(eventListeners != null){//yes
-            //call all listener
+        if(eventListeners != null){
             eventListeners.forEach(l -> l.call(args));
-        }
-        return this;
+        } return this;
     }
 
     /**
@@ -84,7 +76,7 @@ public class EventEmitter {
      * Removes listener from the listener for the event
      * @param event name of event
      * @param listener listener to remove
-     * @return
+     * @return EventEmitter
      */
     public EventEmitter removeListener(String event, EventListener listener) {
         ConcurrentLinkedQueue<EventListener> eventListeners = listeners.get(event);
@@ -107,5 +99,8 @@ public class EventEmitter {
         return eventListeners.size();
     }
 
+    public void removeListeners(String event) {
+        this.listeners.entrySet().removeIf(entry -> entry.getKey().equals(event));
+    }
 
 }

@@ -1,14 +1,18 @@
 package it.shadow.events4j.argument;
 
+import lombok.Builder;
+import lombok.Getter;
+
 /**
  * Event Argument. An event argument has a name to identify it and a value.
  * A value can be any Java type. the value must be immutable to avoid side effect.
  * @param <V> the type of argument value
  */
+@Builder
 public final class Argument<V> {
 
-    private final String name;
-    private final V value;
+    @Getter private final String name;
+    @Getter private final V value;
 
     private Argument(String name, V value) {
         this.name = name;
@@ -16,42 +20,8 @@ public final class Argument<V> {
     }
 
     public static <V> Argument of(String name, V value){
-        return newBuilder().setName(name).setValue(value).build();
+        return builder().name(name).value(value).build();
     };
-
-    public V getValue(){
-        return value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-
-    public static class Builder<V>{
-
-        private String name;
-        private V value;
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setValue(V value) {
-            this.value = value;
-            return this;
-        }
-
-        public Argument<V> build() {
-            return new Argument<>(this.name,this.value);
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
