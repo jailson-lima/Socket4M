@@ -3,9 +3,7 @@ package me.devnatan.socket4m.client;
 import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
-import me.devnatan.socket4m.Core;
 import me.devnatan.socket4m.enums.SocketCloseReason;
-import me.devnatan.socket4m.enums.SocketOpenReason;
 import me.devnatan.socket4m.handler.Handler;
 import me.devnatan.socket4m.message.Message;
 
@@ -16,8 +14,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -29,6 +25,7 @@ public class Client extends EventEmitter {
     private Worker worker = new Worker(this);
     private final Map<String, Object> options = new HashMap<>();
     private final List<Handler> handlers = new LinkedList<>();
+    private Utilities utilities;
 
     /**
      * Address of the server to connect to
@@ -132,6 +129,19 @@ public class Client extends EventEmitter {
         handlers.stream().filter(predicte).findFirst().ifPresent(Handler::handle);
     }
 
+    public Utilities getUtilities() {
+        return utilities;
+    }
+
+    public void setUtilities(Utilities utilities) {
+        this.utilities = utilities;
+    }
+
+    public void log(Level level, String message) {
+        if(utilities != null)
+            utilities.log(level, message);
+    }
+
     /**
      * Connect to the server
      */
@@ -170,10 +180,6 @@ public class Client extends EventEmitter {
                         case "READ_BUFFER_SIZE":
                             socket.setReceiveBufferSize((int) v);
                             break;
-                        default:
-                            Core c = Core.getInstance();
-                            if(c != null)
-                                c.log(Level.WARNING, "Socket client option " + k + " not found.");
                     }
                 }
             }
