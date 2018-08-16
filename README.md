@@ -141,7 +141,7 @@ client.on("message", args -> {
 ```
 
 ### Erros na conexão
-Manipuladores de desconexão são chamados aqui, por exemplo:\n
+Manipuladores de desconexão são chamados aqui, por exemplo:\
 O `DefaultDisconnectHandler` é chamado quando o `SocketCloseReason` deste evento é `RESET`.
 ```java
 client.on("error", args -> {
