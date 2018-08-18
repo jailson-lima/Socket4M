@@ -7,6 +7,36 @@
     <groupId>me.devnatan.socket4m</groupId>
     <artifactId>Socket4M</artifactId>
     <version>1.0.0</version>
+    <description>Java socket client and server for MotoNetwork</description>
+    <packaging>pom</packaging>
+    <inceptionYear>2018</inceptionYear>
+
+    <organization>
+        <name>MotoNetwork</name>
+        <url>https://motocrack.net</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>DevNatan</id>
+            <email>itroken99@gmail.com</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>Client</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/MotoCrack/Socket4M/issues</url>
+    </issueManagement>
 
     <repositories>
         <repository>
@@ -38,10 +68,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>

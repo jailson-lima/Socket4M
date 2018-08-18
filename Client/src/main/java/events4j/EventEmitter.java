@@ -1,8 +1,8 @@
-package it.shadow.events4j;
+package events4j;
 
 
-import it.shadow.events4j.argument.Arguments;
-import it.shadow.events4j.listener.EventListener;
+import events4j.argument.Arguments;
+import events4j.listener.EventListener;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -1,4 +1,4 @@
-package it.shadow.events4j.argument;
+package events4j.argument;
 
 import lombok.Getter;
 

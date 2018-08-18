@@ -1,8 +1,8 @@
 package me.devnatan.socket4m.client;
 
-import it.shadow.events4j.EventEmitter;
-import it.shadow.events4j.argument.Argument;
-import it.shadow.events4j.argument.Arguments;
+import events4j.EventEmitter;
+import events4j.argument.Argument;
+import events4j.argument.Arguments;
 import lombok.Getter;
 import lombok.Setter;
 import me.devnatan.socket4m.client.enums.SocketCloseReason;
