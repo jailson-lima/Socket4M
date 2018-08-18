@@ -28,7 +28,7 @@ public class DefaultReconnectHandler extends AbstractHandler {
     public void handle(Consumer<Boolean> complete) {
         attempts = 0;
         this.complete = false;
-        client.debug(Level.INFO, "[DEBUG] Trying to reconnect...");
+        client.debug(Level.INFO, "Trying to reconnect...");
         reconnect(tries, complete);
     }
 

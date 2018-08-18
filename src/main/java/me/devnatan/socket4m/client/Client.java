@@ -64,7 +64,7 @@ public class Client extends EventEmitter {
      * @param predicate = the condition
      */
     public void handleIf(Predicate<Handler> predicate) {
-        handlers.stream().filter(predicate).findFirst().ifPresent(h -> h.handle(c -> log(c ? Level.INFO : Level.WARNING, "[DEBUG] Handle " + h.getClass().getSimpleName() + " handle " + (c ? "success" : "failed") + ".")));
+        handlers.stream().filter(predicate).findFirst().ifPresent(h -> h.handle(c -> debug(c ? Level.INFO : Level.WARNING, "Handle " + h.getClass().getSimpleName() + " handle " + (c ? "success" : "failed") + ".")));
     }
 
     public void log(Level level, String message) {
@@ -73,7 +73,7 @@ public class Client extends EventEmitter {
     }
 
     public void debug(Level level, String message) {
-        if(utilities != null && utilities.isDebug()) log(level, message);
+        if(utilities != null && utilities.isDebug()) log(level, "[DEBUG] " + message);
     }
 
     /**
@@ -122,29 +122,27 @@ public class Client extends EventEmitter {
 
             if(connected && socket.isConnected()) {
                 consumer.accept(SocketOpenReason.RECONNECT);
-                if(utilities.isDebug()) log(Level.INFO, "[DEBUG] Reconnected successfully.");
+                debug(Level.INFO, "Reconnected successfully.");
                 return;
             }
 
             connected = true;
             consumer.accept(SocketOpenReason.CONNECT);
-            if(utilities.isDebug()) log(Level.INFO, "[DEBUG] Connected successfully.");
+            debug(Level.INFO, "Connected successfully.");
         } catch (ConnectException e) {
             emit("error", new Arguments.Builder()
                     .with(Argument.of("throwable", e))
                     .with(Argument.of("reason", SocketCloseReason.REFUSED))
                     .build()
             );
-            if(utilities.isDebug()) {
-                log(Level.SEVERE, "[DEBUG] Connection refused.");
-            }
+            debug(Level.SEVERE, "Connection refused.");
         } catch (IOException e) {
             emit("error", new Arguments.Builder()
                     .with(Argument.of("throwable", e))
                     .with(Argument.of("reason", SocketCloseReason.IO))
                     .build()
             );
-            if(utilities.isDebug()) log(Level.SEVERE, "[DEBUG] I/O error: " + e.getMessage() + ".");
+            debug(Level.SEVERE, "I/O error: " + e.getMessage() + ".");
         }
     }
 

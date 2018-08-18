@@ -63,15 +63,10 @@ public class Worker extends EventEmitter implements Runnable {
 
     public void work() {
         if(running && client.getUtilities().isDebug()) {
-            client.debug(Level.WARNING, "[DEBUG] Worker is already running.");
+            client.debug(Level.WARNING, "Worker is already running.");
         } else if(!running) {
-            messageHandler.on("message-read", args -> {
-                client.debug(Level.INFO, "[DEBUG] Message received: " + ((Message) args.value("data")).getText());
-            });
-
-            messageHandler.on("message-write", args -> {
-                client.debug(Level.INFO, "[DEBUG] Message write: " + ((Message) args.value("data")).getText());
-            });
+            messageHandler.on("message-read", args -> client.debug(Level.INFO, "Message received: " + ((Message) args.value("data")).getText()));
+            messageHandler.on("message-write", args -> client.debug(Level.INFO, "Message write: " + ((Message) args.value("data")).getText()));
             online = true;
             new Thread(this, "Client").start();
         }
