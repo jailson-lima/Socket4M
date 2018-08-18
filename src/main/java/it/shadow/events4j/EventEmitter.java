@@ -30,7 +30,9 @@ public class EventEmitter {
             listeners.put(event,eventListeners);
         }
 
-        eventListeners.add(listener);
+        if(!eventListeners.contains(listener)) {
+            eventListeners.add(listener);
+        }
         return this;
     }
 

@@ -122,7 +122,7 @@ public class Client extends EventEmitter {
 
             if(connected && socket.isConnected()) {
                 consumer.accept(SocketOpenReason.RECONNECT);
-                debug(Level.INFO, "Reconnected successfully.");
+                if(utilities.isDebug()) debug(Level.INFO, "Reconnected successfully.");
                 return;
             }
 
