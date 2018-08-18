@@ -67,8 +67,10 @@ client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
 ```
 
 ### Estabelecendo conexão
-Atribua um endereço de IP ao cliente **COM PORTA**.\
+Atribua um endereço de IP ou somente porta.
 É possível atribuir endereço e porta diretamente na classe.
+
+**A partir da versão 1.0.1 o uso obrigatório da porta foi removido.**
 ```java
 client.setAddress("127.0.0.1");
 client.setPort(8080);
@@ -86,18 +88,27 @@ client.setTimeout(10000);
 
 // ou
 client.connect("127.0.0.1", 8080, 10000);
+
+// a partir da 1.0.1
+client.connect(8080, reason -> {
+  if(reason == SocketOpenReason.CONNECT) {
+    client.log(Level.INFO, "Conectado pela primeira vez com sucesso.");
+  }
+
+  if(reason == SocketOpenReason.RECONNECT) {
+    client.log(Level.INFO, "Reconectado com sucesso");
+  }
+});
 ```
 
 É possível conectar atribuindo endereço na classe e não no momento da conexão.
 ```java
-// Endereço e porta já estão atribuidos na classe.
+// Endereço e/ou porta já estão atribuidos na classe.
 client.connect();
 ```
 **OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
 
 ## Eventos
-Quando o cliente estabelece conexão com o servidor
-
 ### Sintaxe
 ```
 client.on("evento", args -> {
@@ -105,7 +116,9 @@ client.on("evento", args -> {
 });
 ```
 ### Quando conectar
+Método de conexão do cliente na versão 1.0.0
 ```java
+// disponível somente na 1.0.0
 client.on("connect", args -> {
   SocketOpenReason reason = (SocketOpenReason) args.value("reason");
   if(reason == null); {
@@ -118,6 +131,7 @@ client.on("connect", args -> {
   }
 });
 ```
+**OBS: A partir da versão 1.0.1 o evento ao conectar foi substituido pelo uso diretamente no método de conexão.**
 
 ### Quando desconectar
 Este evento não contém argumentos.
@@ -126,6 +140,7 @@ client.on("disconnect", args -> {
   // ...
 });
 
+// disponível somente na 1.0.0
 // ou
 client.getWorker().on("end", args -> {
 
