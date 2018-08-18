@@ -2,7 +2,7 @@ package me.devnatan.socket4m.client;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.message.MessageHandler;
+import me.devnatan.socket4m.client.message.MessageHandler;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

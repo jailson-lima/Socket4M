@@ -1,4 +1,4 @@
-package me.devnatan.socket4m.message;
+package me.devnatan.socket4m.client.message;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

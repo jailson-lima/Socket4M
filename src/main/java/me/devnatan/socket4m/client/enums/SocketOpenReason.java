@@ -1,10 +1,12 @@
-package me.devnatan.socket4m.enums;
+package me.devnatan.socket4m.client.enums;
 
 public enum SocketOpenReason {
+
+    CONNECT,
 
     /**
      * When a connection is already open it is reopened with the server through a re-connection.
      */
-    RECONNECTED
+    RECONNECT
 
 }

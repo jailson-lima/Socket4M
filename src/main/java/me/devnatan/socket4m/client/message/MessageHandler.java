@@ -1,5 +1,6 @@
-package me.devnatan.socket4m.message;
+package me.devnatan.socket4m.client.message;
 
+import it.shadow.events4j.EventEmitter;
 import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Consumer;
 
-public class MessageHandler {
+public class MessageHandler extends EventEmitter {
 
     @Getter @Setter private BlockingQueue<Message> readQueue;
     @Getter @Setter private BlockingQueue<Message> writeQueue;
@@ -44,10 +45,11 @@ public class MessageHandler {
 
     private void process(Message message, Client client) {
         if(readQueue.offer(message)) {
-            client.emit("message", new Arguments.Builder()
+            Arguments args = new Arguments.Builder()
                     .with(Argument.of("data", message))
-                    .build()
-            );
+                    .build();
+            client.emit("message", args);
+            emit("message-read", args);
         }
     }
 
@@ -55,6 +57,9 @@ public class MessageHandler {
         OutputStreamWriter osw = new OutputStreamWriter(out, "UTF-8");
         osw.write(message.json());
         osw.flush();
+        emit("message-write", new Arguments.Builder()
+                .with(Argument.of("data", message))
+                .build());
     }
 
     private void read(InputStream in, Consumer<Message> consumer) throws IOException {

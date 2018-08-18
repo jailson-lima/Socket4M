@@ -5,10 +5,11 @@ import it.shadow.events4j.argument.Argument;
 import it.shadow.events4j.argument.Arguments;
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.enums.SocketCloseReason;
-import me.devnatan.socket4m.handler.Handler;
-import me.devnatan.socket4m.message.Message;
-import me.devnatan.socket4m.message.MessageHandler;
+import me.devnatan.socket4m.client.enums.SocketCloseReason;
+import me.devnatan.socket4m.client.enums.SocketOpenReason;
+import me.devnatan.socket4m.client.handler.Handler;
+import me.devnatan.socket4m.client.message.Message;
+import me.devnatan.socket4m.client.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -30,12 +32,14 @@ public class Client extends EventEmitter {
     @Getter private final List<Handler> handlers;
     @Getter @Setter private Utilities utilities;
     @Getter @Setter private MessageHandler messageHandler;
+    @Getter @Setter private boolean connected;
 
     public Client() {
         timeout = -1;
-        worker = new Worker(this);
         options = new HashMap<>();
         handlers = new LinkedList<>();
+        utilities = new Utilities();
+        connected = false;
     }
 
     /**
@@ -50,10 +54,9 @@ public class Client extends EventEmitter {
     /**
      * Adds a new handler
      * @param handler = handler
-     * @return "true" if the handler is added; "false" if that handler already exists in the list.
      */
-    public boolean addHandler(Handler handler) {
-        return handlers.add(handler);
+    public void addHandler(Handler handler) {
+        handlers.add(handler);
     }
 
     /**
@@ -61,7 +64,7 @@ public class Client extends EventEmitter {
      * @param predicate = the condition
      */
     public void handleIf(Predicate<Handler> predicate) {
-        handlers.stream().filter(predicate).findFirst().ifPresent(Handler::handle);
+        handlers.stream().filter(predicate).findFirst().ifPresent(h -> h.handle(c -> log(c ? Level.INFO : Level.WARNING, "[DEBUG] Handle " + h.getClass().getSimpleName() + " handle " + (c ? "success" : "failed") + ".")));
     }
 
     public void log(Level level, String message) {
@@ -69,19 +72,21 @@ public class Client extends EventEmitter {
             utilities.log(level, message);
     }
 
+    public void debug(Level level, String message) {
+        if(utilities != null && utilities.isDebug()) log(level, message);
+    }
+
     /**
      * Connect to the server
      */
-    public void connect() {
-        if(address == null)
-            throw new IllegalArgumentException("Server address cannot be null");
+    public void connect(Consumer<SocketOpenReason> consumer) {
         if(port == -1)
-            throw new IllegalArgumentException("Server port must be defined");
+            throw new IllegalArgumentException("Server port cannot be negative");
 
         try {
             Socket socket = new Socket(address, port);
 
-            if(messageHandler == null) messageHandler = utilities.getMessageHandler();
+            if (messageHandler == null) messageHandler = utilities.getMessageHandler();
             if (timeout != -1) socket.setSoTimeout(timeout);
             if (options.size() > 0) {
                 for (Map.Entry<String, Object> entry : options.entrySet()) {
@@ -113,21 +118,44 @@ public class Client extends EventEmitter {
 
             worker = new Worker(this, socket);
             worker.setMessageHandler(messageHandler);
-            worker.setOnline(true);
             worker.work();
+
+            if(connected && socket.isConnected()) {
+                consumer.accept(SocketOpenReason.RECONNECT);
+                if(utilities.isDebug()) log(Level.INFO, "[DEBUG] Reconnected successfully.");
+                return;
+            }
+
+            connected = true;
+            consumer.accept(SocketOpenReason.CONNECT);
+            if(utilities.isDebug()) log(Level.INFO, "[DEBUG] Connected successfully.");
         } catch (ConnectException e) {
             emit("error", new Arguments.Builder()
                     .with(Argument.of("throwable", e))
                     .with(Argument.of("reason", SocketCloseReason.REFUSED))
                     .build()
             );
+            if(utilities.isDebug()) {
+                log(Level.SEVERE, "[DEBUG] Connection refused.");
+            }
         } catch (IOException e) {
             emit("error", new Arguments.Builder()
                     .with(Argument.of("throwable", e))
                     .with(Argument.of("reason", SocketCloseReason.IO))
                     .build()
             );
+            if(utilities.isDebug()) log(Level.SEVERE, "[DEBUG] I/O error: " + e.getMessage() + ".");
         }
+    }
+
+    /**
+     * Connect to the server
+     * @param port = server port
+     */
+    public void connect(int port, Consumer<SocketOpenReason> consumer) {
+        this.port = port;
+        this.timeout = -1;
+        connect(consumer);
     }
 
     /**
@@ -135,11 +163,11 @@ public class Client extends EventEmitter {
      * @param address = server address
      * @param port = server port
      */
-    public void connect(String address, int port) throws IOException {
+    public void connect(String address, int port, Consumer<SocketOpenReason> consumer) {
         this.address = address;
         this.port = port;
         this.timeout = -1;
-        connect();
+        connect(consumer);
     }
 
     /**
@@ -148,11 +176,11 @@ public class Client extends EventEmitter {
      * @param port = server port
      * @param timeout = connection timeout
      */
-    public void connect(String address, int port, int timeout) throws IOException {
+    public void connect(String address, int port, int timeout, Consumer<SocketOpenReason> consumer) {
         this.address = address;
         this.port = port;
         this.timeout = timeout;
-        connect();
+        connect(consumer);
     }
 
     /**
@@ -169,11 +197,14 @@ public class Client extends EventEmitter {
      * Terminates the connection to the server if it is connected and running.
      */
     public void end() {
-        if(worker == null || !worker.isRunning())
-            throw new IllegalStateException("Socket client worker isn't running.");
-
-        worker.setRunning(false);
-        worker.once("end", arguments -> emit("disconnect"));
+        try {
+            worker.setRunning(false);
+            worker.setOnline(false);
+            worker.getSocket().close();
+            if(utilities.isDebug()) log(Level.INFO, "Disconnected successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
