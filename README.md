@@ -54,9 +54,9 @@ Ainda não há muitos manipuladores disponíveis, somente um.\
 O `DefaultReconnectHandler` pode ser usado para conexões que necessitam de suporte para reconectamento automático.\
 Ele é chamado quando o servidor deixa de responder ao cliente ou fecha a conexão inesperadamente.\
 
-**OBS: `DefaultReconnectHandler` não se aplica a conexões terminadas com motivo `TIMEOUT`**
+**OBS: Na versão 1.0.0 o `DefaultReconnectHandler` não se aplica a conexões terminadas com motivo `TIMEOUT`**
 ```java
-// 3 é o número de tentativas de reconectamento
+// 3 é o número de tentativas de reconexão
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 3));
 
 // também é possível tentar reconectar somente uma vez não atribuindo nenhum valor
@@ -64,11 +64,15 @@ client.addHandler(new DefaultReconnectHandler(client, client.getWorker()));
 
 // ou atribuindo um valor menor ou igual a zero.
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
+
+// a partir da versão 1.0.1 atribuir um "Worker" não é mais necessário no construtor.
+client.addHandler(new DefaultReconnectHandler(client));
+client.addHandler(new DefaultReconnectHandler(client, 3));
 ```
 
 ### Estabelecendo conexão
 Atribua um endereço de IP ou somente porta.
-É possível atribuir endereço e porta diretamente na classe.
+É possível atribuir também endereço e porta diretamente na classe.
 
 **A partir da versão 1.0.1 o uso obrigatório da porta foi removido.**
 ```java
