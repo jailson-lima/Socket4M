@@ -3,8 +3,9 @@ package me.devnatan.socket4m.client.message;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import me.devnatan.socket4m.client.message.json.MessageDeserializer;
+import me.devnatan.socket4m.client.message.json.MessageSerializer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
@@ -20,11 +21,12 @@ public class Message {
      */
     public String toJson() {
         if(values == null) return null;
-        try {
-            return new GsonBuilder().create().toJson(values, Map.class);
-        } catch (com.google.gson.JsonSyntaxException e) {
-            e.printStackTrace();
-        } return null;
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Message.class, new MessageDeserializer());
+        builder.registerTypeAdapter(Message.class, new MessageSerializer());
+
+        return builder.create().toJson(this);
     }
 
     /**
@@ -34,16 +36,11 @@ public class Message {
      * @return Message
      */
     public static Message fromJson(String s) {
-        Message message = new Message();
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Message.class, new MessageDeserializer());
+        builder.registerTypeAdapter(Message.class, new MessageSerializer());
 
-        try {
-            message.setValues(new HashMap<>());
-            message.getValues().putAll(new GsonBuilder().create().fromJson(s, Map.class));
-        } catch (com.google.gson.JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-
-        return message;
+        return builder.create().fromJson(s, Message.class);
     }
 
     public static <K, V> Message fromMap(Map<K, V> map) {
@@ -52,5 +49,13 @@ public class Message {
         message.setText(message.toJson());
 
         return message;
+    }
+
+    public boolean equals(Object other) {
+        if(!(other instanceof Message))
+            return false;
+
+        Message otherMessage = (Message) other;
+        return otherMessage.text.equals(text) && otherMessage.getValues().equals(values);
     }
 }

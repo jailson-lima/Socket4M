@@ -1,0 +1,16 @@
+package me.devnatan.socket4m.client.message.json;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import me.devnatan.socket4m.client.message.Message;
+
+import java.lang.reflect.Type;
+
+public class MessageDeserializer implements JsonDeserializer<Message> {
+
+    public Message deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return context.deserialize(json, Message.class);
+    }
+}
