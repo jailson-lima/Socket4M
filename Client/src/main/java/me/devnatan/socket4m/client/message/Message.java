@@ -9,7 +9,7 @@ import java.util.Map;
 public class Message {
 
     @Getter @Setter private String text;
-    @Getter @Setter private Map<Object, Object> values;
+    @Getter @Setter private Map<?, ?> values;
 
     public Message() {}
 
@@ -18,10 +18,8 @@ public class Message {
      * @return = serialized message
      */
     public String toJson() {
-        if(values == null) return null;
-
         GsonBuilder builder = new GsonBuilder();
-        return builder.create().toJson(this, Message.class);
+        return builder.create().toJson(this);
     }
 
     /**
@@ -37,7 +35,7 @@ public class Message {
 
     public static <K, V> Message fromMap(Map<K, V> map) {
         Message message = new Message();
-        message.setValues((Map<Object, Object>) map);
+        message.setValues(map);
         message.setText(message.toJson());
 
         return message;
