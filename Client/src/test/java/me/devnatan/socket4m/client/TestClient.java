@@ -13,7 +13,7 @@ public class TestClient {
         client.setPort(8083);
         client.setDebug(true);
         client.addHandler(new DefaultReconnectHandler(client, 10));
-        client.connectNIO(socketOpenReason -> { });
+        client.connect(socketOpenReason -> { });
 
         client.on("error", args -> {
             SocketCloseReason reason = (SocketCloseReason) args.value("reason");

@@ -14,7 +14,6 @@ import me.devnatan.socket4m.client.message.MessageHandler;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -94,7 +93,7 @@ public class Client extends EventEmitter {
         if(debug) log(level, "[DEBUG] " + message);
     }
 
-    public void connectNIO(Consumer<SocketOpenReason> consumer) {
+    public void connect(Consumer<SocketOpenReason> consumer) {
         if(port == -1)
             throw new IllegalArgumentException("Server port cannot be negative");
 
@@ -139,79 +138,6 @@ public class Client extends EventEmitter {
 
             worker = new Worker(this, socket);
             messageHandler = new MessageHandler(worker);
-            worker.work();
-
-            if(connected && socket.isConnected()) {
-                consumer.accept(SocketOpenReason.RECONNECT);
-                debug(Level.INFO, "Reconnected successfully.");
-                return;
-            }
-
-            connected = true;
-            consumer.accept(SocketOpenReason.CONNECT);
-            debug(Level.INFO, "Connected successfully.");
-        } catch (ConnectException e) {
-            emit("error", new Arguments.Builder()
-                    .with(Argument.of("throwable", e))
-                    .with(Argument.of("reason", SocketCloseReason.REFUSED))
-                    .build()
-            );
-            debug(Level.SEVERE, "Connection refused.");
-        } catch (IOException e) {
-            emit("error", new Arguments.Builder()
-                    .with(Argument.of("throwable", e))
-                    .with(Argument.of("reason", SocketCloseReason.IO))
-                    .build()
-            );
-            debug(Level.SEVERE, "I/O error: " + e.getMessage() + ".");
-        }
-    }
-
-    /**
-     * Connect to the server
-     * @param consumer = when complete
-     */
-    public void connect(Consumer<SocketOpenReason> consumer) {
-        if(port == -1)
-            throw new IllegalArgumentException("Server port cannot be negative");
-
-        if (messageHandler == null) {
-            throw new IllegalArgumentException("Message handler cannot be null!");
-        }
-
-        try {
-            Socket socket = new Socket(address, port);
-            if (timeout != -1) socket.setSoTimeout(timeout);
-            if (options.size() > 0) {
-                for (Map.Entry<String, Object> entry : options.entrySet()) {
-                    String k = entry.getKey();
-                    Object v = entry.getValue();
-                    switch (k) {
-                        case "KEEP_ALIVE":
-                            socket.setKeepAlive((boolean) v);
-                            break;
-                        case "REUSE_ADDRESS":
-                            socket.setReuseAddress((boolean) v);
-                            break;
-                        case "TCP_NO_DELAY":
-                            socket.setTcpNoDelay((boolean) v);
-                            break;
-                        case "OUT_OF_BAND_DATA":
-                            // IMPORTANT!
-                            socket.setOOBInline((boolean) v);
-                            break;
-                        case "WRITE_BUFFER_SIZE":
-                            socket.setSendBufferSize((int) v);
-                            break;
-                        case "READ_BUFFER_SIZE":
-                            socket.setReceiveBufferSize((int) v);
-                            break;
-                    }
-                }
-            }
-
-            // TODO: Remake
-            worker = new Worker(this, null);
             worker.work();
 
             if(connected && socket.isConnected()) {
