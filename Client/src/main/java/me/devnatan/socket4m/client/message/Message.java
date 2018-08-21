@@ -1,18 +1,16 @@
 package me.devnatan.socket4m.client.message;
 
 import com.google.gson.GsonBuilder;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 public class Message {
 
     @Getter @Setter private String text;
-    @Getter @Setter private Map<?, ?> values;
+    @Getter @Setter private Map<Object, Object> values;
 
     public Message() {}
 
@@ -48,9 +46,9 @@ public class Message {
         return message;
     }
 
-    public static Message fromMap(Map<?, ?> map) {
+    public static <K, V> Message fromMap(Map<K, V> map) {
         Message message = new Message();
-        message.setValues(map);
+        message.setValues((Map<Object, Object>) map);
         message.setText(message.toJson());
 
         return message;

@@ -46,7 +46,7 @@ public class MessageHandler {
     }
 
     private void write(Message message) throws IOException {
-        CharBuffer buffer = CharBuffer.wrap(message.json());
+        CharBuffer buffer = CharBuffer.wrap(message.toJson());
         while (buffer.hasRemaining()) {
             worker.getSocket().write(Charset.defaultCharset().encode(buffer));
         }
@@ -62,7 +62,7 @@ public class MessageHandler {
         }
 
         if(message.toString().trim().length() > 0) {
-            consumer.accept(Message.from(message.toString()));
+            consumer.accept(Message.fromJson(message.toString()));
         }
     }
 
