@@ -11,8 +11,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>Socket4M-Client</artifactId>
-    <version>1.0.0</version>
+    <artifactId>Client</artifactId>
+    <version>2.0.0</version>
     <name>Socket4M-Client</name>
     <description>Java socket client for MotoNetwork.</description>
     <packaging>jar</packaging>
