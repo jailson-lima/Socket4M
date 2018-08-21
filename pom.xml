@@ -6,7 +6,7 @@
 
     <groupId>me.devnatan.socket4m</groupId>
     <artifactId>Socket4M</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <description>Java socket client and server for MotoNetwork</description>
     <packaging>pom</packaging>
     <inceptionYear>2018</inceptionYear>
