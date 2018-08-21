@@ -8,6 +8,7 @@ import lombok.Setter;
 import me.devnatan.socket4m.client.enums.SocketCloseReason;
 import me.devnatan.socket4m.client.enums.SocketOpenReason;
 import me.devnatan.socket4m.client.handler.Handler;
+import me.devnatan.socket4m.client.handler.def.DefaultReconnectHandler;
 import me.devnatan.socket4m.client.message.Message;
 import me.devnatan.socket4m.client.message.MessageHandler;
 
@@ -135,6 +136,7 @@ public class Client extends EventEmitter {
                     .with(Argument.of("reason", SocketCloseReason.REFUSED))
                     .build()
             );
+            handleIf(h -> h instanceof DefaultReconnectHandler);
             debug(Level.SEVERE, "Connection refused.");
         } catch (IOException e) {
             emit("error", new Arguments.Builder()

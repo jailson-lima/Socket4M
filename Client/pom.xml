@@ -7,11 +7,11 @@
     <parent>
         <groupId>me.devnatan.socket4m</groupId>
         <artifactId>Socket4M</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>Client</artifactId>
+    <artifactId>Socket4M-Client</artifactId>
     <version>1.0.0</version>
     <name>Socket4M-Client</name>
     <description>Java socket client for MotoNetwork.</description>

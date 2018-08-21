@@ -15,7 +15,8 @@ public class Utilities {
 
     public void log(Level level, String message) {
         if(logger != null) {
-            logger.log(level, message);
+            if(!logger.isLoggable(level)) logger.log(Level.INFO, "[OFF] " + message);
+            else logger.log(level, message);
             return;
         }
 
