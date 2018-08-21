@@ -1,6 +1,24 @@
 # Socket4M
 Cliente socket para interação com um servidor de protocolo TCP.
 
+### Maven
+```xml
+<repositories>
+    <repository>
+        <id>socket4m-repo</id>
+        <url>http://motocrack.net</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>me.devnatan.socket4m</groupId>
+        <artifactId>Socket4M-Client</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+```
+
 ### Atenção
 Não utilize nada deste repositório sem ter pleno conhecimento do que está fazendo.
 
