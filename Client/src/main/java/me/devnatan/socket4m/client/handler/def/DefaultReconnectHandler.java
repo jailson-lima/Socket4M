@@ -9,15 +9,11 @@ import me.devnatan.socket4m.client.handler.AbstractHandler;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+@Deprecated
 public class DefaultReconnectHandler extends AbstractHandler {
 
     @Getter @Setter private int tries;
     @Getter @Setter private int attempts = 0;
-
-    public DefaultReconnectHandler(Client client) {
-        super(client, client.getWorker());
-        this.tries = 10;
-    }
 
     public DefaultReconnectHandler(Client client, int tries) {
         super(client, client.getWorker());
@@ -35,7 +31,12 @@ public class DefaultReconnectHandler extends AbstractHandler {
     private void reconnect(int tries, Consumer<Boolean> complete) {
         for(attempts = 0; attempts < (tries < 0 ? 1 : tries); attempts++) {
             if(this.complete) break;
-            reconnect0(complete);
+            try {
+                reconnect0(complete);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

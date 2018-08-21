@@ -8,13 +8,14 @@ import lombok.Setter;
 import me.devnatan.socket4m.client.enums.SocketCloseReason;
 import me.devnatan.socket4m.client.enums.SocketOpenReason;
 import me.devnatan.socket4m.client.handler.Handler;
-import me.devnatan.socket4m.client.handler.def.DefaultReconnectHandler;
 import me.devnatan.socket4m.client.message.Message;
 import me.devnatan.socket4m.client.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client extends EventEmitter {
 
@@ -31,7 +33,8 @@ public class Client extends EventEmitter {
     @Getter @Setter private Worker worker;
     @Getter private final Map<String, Object> options;
     @Getter private final List<Handler> handlers;
-    @Getter @Setter private Utilities utilities;
+    @Getter @Setter private boolean debug;
+    @Getter @Setter private Logger logger;
     @Getter @Setter private MessageHandler messageHandler;
     @Getter @Setter private boolean connected;
 
@@ -39,7 +42,7 @@ public class Client extends EventEmitter {
         timeout = -1;
         options = new HashMap<>();
         handlers = new LinkedList<>();
-        utilities = new Utilities();
+        debug = false;
         connected = false;
     }
 
@@ -69,25 +72,115 @@ public class Client extends EventEmitter {
     }
 
     public void log(Level level, String message) {
-        if(utilities != null)
-            utilities.log(level, message);
+        if(logger != null) {
+            if (!logger.isLoggable(level)) {
+                logger.log(Level.INFO, "[OFF] " + message);
+                return;
+            }
+
+            logger.log(level, message);
+            return;
+        }
+
+        if(level == Level.SEVERE) {
+            System.err.println(message);
+            return;
+        }
+
+        System.out.println(message);
     }
 
     public void debug(Level level, String message) {
-        if(utilities != null && utilities.isDebug()) log(level, "[DEBUG] " + message);
+        if(debug) log(level, "[DEBUG] " + message);
+    }
+
+    public void connectNIO(Consumer<SocketOpenReason> consumer) {
+        if(port == -1)
+            throw new IllegalArgumentException("Server port cannot be negative");
+
+        try {
+            SocketChannel socket = SocketChannel.open();
+            socket.configureBlocking(false);
+
+            if (timeout != -1) socket.socket().setSoTimeout(timeout);
+            if (options.size() > 0) {
+                for (Map.Entry<String, Object> entry : options.entrySet()) {
+                    String k = entry.getKey();
+                    Object v = entry.getValue();
+                    switch (k) {
+                        case "KEEP_ALIVE":
+                            socket.socket().setKeepAlive((boolean) v);
+                            break;
+                        case "REUSE_ADDRESS":
+                            socket.socket().setReuseAddress((boolean) v);
+                            break;
+                        case "TCP_NO_DELAY":
+                            socket.socket().setTcpNoDelay((boolean) v);
+                            break;
+                        case "OUT_OF_BAND_DATA":
+                            // IMPORTANT!
+                            socket.socket().setOOBInline((boolean) v);
+                            break;
+                        case "WRITE_BUFFER_SIZE":
+                            socket.socket().setSendBufferSize((int) v);
+                            break;
+                        case "READ_BUFFER_SIZE":
+                            socket.socket().setReceiveBufferSize((int) v);
+                            break;
+                    }
+                }
+            }
+
+            socket.connect(new InetSocketAddress(address, port));
+
+            while (!socket.finishConnect()) {
+                debug(Level.INFO, "Connecting...");
+            }
+
+            worker = new Worker(this, socket);
+            messageHandler = new MessageHandler(worker);
+            worker.work();
+
+            if(connected && socket.isConnected()) {
+                consumer.accept(SocketOpenReason.RECONNECT);
+                debug(Level.INFO, "Reconnected successfully.");
+                return;
+            }
+
+            connected = true;
+            consumer.accept(SocketOpenReason.CONNECT);
+            debug(Level.INFO, "Connected successfully.");
+        } catch (ConnectException e) {
+            emit("error", new Arguments.Builder()
+                    .with(Argument.of("throwable", e))
+                    .with(Argument.of("reason", SocketCloseReason.REFUSED))
+                    .build()
+            );
+            debug(Level.SEVERE, "Connection refused.");
+        } catch (IOException e) {
+            emit("error", new Arguments.Builder()
+                    .with(Argument.of("throwable", e))
+                    .with(Argument.of("reason", SocketCloseReason.IO))
+                    .build()
+            );
+            debug(Level.SEVERE, "I/O error: " + e.getMessage() + ".");
+        }
     }
 
     /**
      * Connect to the server
+     * @param consumer = when complete
      */
     public void connect(Consumer<SocketOpenReason> consumer) {
         if(port == -1)
             throw new IllegalArgumentException("Server port cannot be negative");
 
+        if (messageHandler == null) {
+            throw new IllegalArgumentException("Message handler cannot be null!");
+        }
+
         try {
             Socket socket = new Socket(address, port);
-
-            if (messageHandler == null) messageHandler = utilities.getMessageHandler();
             if (timeout != -1) socket.setSoTimeout(timeout);
             if (options.size() > 0) {
                 for (Map.Entry<String, Object> entry : options.entrySet()) {
@@ -117,13 +210,13 @@ public class Client extends EventEmitter {
                 }
             }
 
-            worker = new Worker(this, socket);
-            worker.setMessageHandler(messageHandler);
+            // TODO: Remake
+            worker = new Worker(this, null);
             worker.work();
 
             if(connected && socket.isConnected()) {
                 consumer.accept(SocketOpenReason.RECONNECT);
-                if(utilities.isDebug()) debug(Level.INFO, "Reconnected successfully.");
+                debug(Level.INFO, "Reconnected successfully.");
                 return;
             }
 
@@ -136,7 +229,6 @@ public class Client extends EventEmitter {
                     .with(Argument.of("reason", SocketCloseReason.REFUSED))
                     .build()
             );
-            handleIf(h -> h instanceof DefaultReconnectHandler);
             debug(Level.SEVERE, "Connection refused.");
         } catch (IOException e) {
             emit("error", new Arguments.Builder()
@@ -146,41 +238,6 @@ public class Client extends EventEmitter {
             );
             debug(Level.SEVERE, "I/O error: " + e.getMessage() + ".");
         }
-    }
-
-    /**
-     * Connect to the server
-     * @param port = server port
-     */
-    public void connect(int port, Consumer<SocketOpenReason> consumer) {
-        this.port = port;
-        this.timeout = -1;
-        connect(consumer);
-    }
-
-    /**
-     * Connect to the server
-     * @param address = server address
-     * @param port = server port
-     */
-    public void connect(String address, int port, Consumer<SocketOpenReason> consumer) {
-        this.address = address;
-        this.port = port;
-        this.timeout = -1;
-        connect(consumer);
-    }
-
-    /**
-     * Connect to the server
-     * @param address = server address
-     * @param port = server port
-     * @param timeout = connection timeout
-     */
-    public void connect(String address, int port, int timeout, Consumer<SocketOpenReason> consumer) {
-        this.address = address;
-        this.port = port;
-        this.timeout = timeout;
-        connect(consumer);
     }
 
     /**
@@ -197,14 +254,8 @@ public class Client extends EventEmitter {
      * Terminates the connection to the server if it is connected and running.
      */
     public void end() {
-        try {
-            worker.setRunning(false);
-            worker.setOnline(false);
-            worker.getSocket().close();
-            if(utilities.isDebug()) log(Level.INFO, "Disconnected successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        worker.finish();
+        debug(Level.INFO, "Disconnected successfully.");
     }
 
 }

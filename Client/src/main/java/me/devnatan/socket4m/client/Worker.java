@@ -7,24 +7,21 @@ import lombok.Getter;
 import lombok.Setter;
 import me.devnatan.socket4m.client.enums.SocketCloseReason;
 import me.devnatan.socket4m.client.handler.def.DefaultReconnectHandler;
-import me.devnatan.socket4m.client.message.Message;
-import me.devnatan.socket4m.client.message.MessageHandler;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 
 public class Worker extends EventEmitter implements Runnable {
 
     @Getter private final Client client;
-    @Getter @Setter private Socket socket;
-    @Getter @Setter private MessageHandler messageHandler;
-    @Getter @Setter private volatile boolean running = false;
-    @Getter @Setter private volatile boolean online = false;
+    @Getter @Setter private SocketChannel socket;
+    @Getter @Setter private boolean running = false;
+    @Getter @Setter private boolean online = false;
 
-    Worker(Client client, Socket socket) {
+    Worker(Client client, SocketChannel socket) {
         this.client = client;
         this.socket = socket;
     }
@@ -32,7 +29,7 @@ public class Worker extends EventEmitter implements Runnable {
     public void run() {
         try {
             do {
-                messageHandler.handle(client);
+                client.getMessageHandler().handle(client);
             } while(running);
         } catch (SocketTimeoutException e) {
             online = false;
@@ -62,20 +59,24 @@ public class Worker extends EventEmitter implements Runnable {
     }
 
     public void work() {
-        if(running && client.getUtilities().isDebug()) {
+        if(running) {
             client.debug(Level.WARNING, "Worker is already running.");
         } else if(!running) {
-            messageHandler.on("message-read", args -> client.debug(Level.INFO, "Message received: " + ((Message) args.value("data")).getText()));
-            messageHandler.on("message-write", args -> client.debug(Level.INFO, "Message write: " + ((Message) args.value("data")).getText()));
+            running = true;
             online = true;
             new Thread(this, "Client").start();
         }
     }
 
-    private void finish() {
-        client.emit("disconnect");
+    public void finish() {
         running = false;
         online = false;
+        try {
+            socket.close();
+            client.emit("disconnect");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

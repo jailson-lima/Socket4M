@@ -1,46 +1,39 @@
 package me.devnatan.socket4m.client.message;
 
-import events4j.EventEmitter;
 import events4j.argument.Argument;
 import events4j.argument.Arguments;
 import lombok.Getter;
 import lombok.Setter;
 import me.devnatan.socket4m.client.Client;
+import me.devnatan.socket4m.client.Worker;
 
-import java.io.*;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-public class MessageHandler extends EventEmitter {
+public class MessageHandler {
 
+    @Getter private final Worker worker;
     @Getter @Setter private BlockingQueue<Message> readQueue;
     @Getter @Setter private BlockingQueue<Message> writeQueue;
     @Getter @Setter private int buffer = 2048;
 
-    public MessageHandler() {
-        readQueue = new ArrayBlockingQueue<>(10);
-        writeQueue = new LinkedBlockingDeque<>();
-    }
-
-    public MessageHandler(BlockingQueue<Message> readQueue) {
-        this.readQueue = readQueue;
-        writeQueue = new LinkedBlockingDeque<>();
-    }
-
-    public MessageHandler(BlockingQueue<Message> readQueue, int buffer) {
-        this.readQueue = readQueue;
-        this.buffer = buffer;
-        writeQueue = new LinkedBlockingDeque<>();
+    public MessageHandler(Worker worker) {
+        readQueue = new ArrayBlockingQueue<>(100);
+        writeQueue = new LinkedBlockingQueue<>();
+        this.worker = worker;
     }
 
     public void handle(Client client) throws IOException {
-        if(!writeQueue.isEmpty()) {
-            write(writeQueue.poll(), client.getWorker().getSocket().getOutputStream());
-        }
-
-        read(client.getWorker().getSocket().getInputStream(), (message) -> process(message, client));
+        if(!writeQueue.isEmpty())
+            write(writeQueue.poll());
+        read((message) -> process(message, client));
     }
 
     private void process(Message message, Client client) {
@@ -49,25 +42,27 @@ public class MessageHandler extends EventEmitter {
                     .with(Argument.of("data", message))
                     .build();
             client.emit("message", args);
-            emit("message-read", args);
         }
     }
 
-    private void write(Message message, OutputStream out) throws IOException {
-        OutputStreamWriter osw = new OutputStreamWriter(out, "UTF-8");
-        osw.write(message.json());
-        osw.flush();
-        emit("message-write", new Arguments.Builder()
-                .with(Argument.of("data", message))
-                .build());
+    private void write(Message message) throws IOException {
+        CharBuffer buffer = CharBuffer.wrap(message.json());
+        while (buffer.hasRemaining()) {
+            worker.getSocket().write(Charset.defaultCharset().encode(buffer));
+        }
     }
 
-    private void read(InputStream in, Consumer<Message> consumer) throws IOException {
-        char[] b = new char[buffer];
-        int c;
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        while((c = br.read(b)) != -1) {
-            consumer.accept(Message.from(new String(b).substring(0, c)));
+    private void read(Consumer<Message> consumer) throws IOException {
+        ByteBuffer bufferA = ByteBuffer.allocate(20);
+        StringBuilder message = new StringBuilder();
+        SocketChannel channel = worker.getSocket();
+        while ((channel.read(bufferA)) > 0) {
+            bufferA.flip();
+            message.append(Charset.defaultCharset().decode(bufferA));
+        }
+
+        if(message.toString().trim().length() > 0) {
+            consumer.accept(Message.from(message.toString()));
         }
     }
 
