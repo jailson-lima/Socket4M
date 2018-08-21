@@ -1,42 +1,32 @@
 package me.devnatan.socket4m.client.message;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 @Builder
 public class Message {
 
     @Getter @Setter private String text;
-    @Getter private final Map<String, Object> values = new LinkedHashMap<>();
+    @Getter @Setter private Map<?, ?> values;
 
     public Message() {}
-
-    public Message(String text) {
-        this.text = text;
-    }
 
     /**
      * Serialize the message object to a string in JSON.
      * @return = serialized message
      */
-    public String json() {
-        if(values.isEmpty()) return text;
+    public String toJson() {
+        if(values == null) return null;
         try {
-            Gson gson = new GsonBuilder().create();
-            Type type = new TypeToken<Map>() { }.getType();
-
-            return gson.toJson(values, type);
+            return new GsonBuilder().create().toJson(values, Map.class);
         } catch (com.google.gson.JsonSyntaxException e) {
-            return text;
-        }
+            e.printStackTrace();
+        } return null;
     }
 
     /**
@@ -45,16 +35,23 @@ public class Message {
      * @param s = the JSON string
      * @return Message
      */
-    public static Message from(String s) {
+    public static Message fromJson(String s) {
         Message message = new Message();
-        message.setText(s);
 
         try {
-            Gson gson = new GsonBuilder().create();
-            Type type = new TypeToken<Map>() { }.getType();
+            message.setValues(new HashMap<>());
+            message.getValues().putAll(new GsonBuilder().create().fromJson(s, Map.class));
+        } catch (com.google.gson.JsonSyntaxException e) {
+            e.printStackTrace();
+        }
 
-            message.getValues().putAll(gson.fromJson(s, type));
-        } catch (com.google.gson.JsonSyntaxException ignored) { }
+        return message;
+    }
+
+    public static Message fromMap(Map<?, ?> map) {
+        Message message = new Message();
+        message.setValues(map);
+        message.setText(message.toJson());
 
         return message;
     }
