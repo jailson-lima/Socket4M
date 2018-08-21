@@ -3,8 +3,6 @@ package me.devnatan.socket4m.client.message;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.client.message.json.MessageDeserializer;
-import me.devnatan.socket4m.client.message.json.MessageSerializer;
 
 import java.util.Map;
 
@@ -23,10 +21,7 @@ public class Message {
         if(values == null) return null;
 
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Message.class, new MessageDeserializer());
-        builder.registerTypeAdapter(Message.class, new MessageSerializer());
-
-        return builder.create().toJson(this);
+        return builder.create().toJson(this, Message.class);
     }
 
     /**
@@ -37,9 +32,6 @@ public class Message {
      */
     public static Message fromJson(String s) {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Message.class, new MessageDeserializer());
-        builder.registerTypeAdapter(Message.class, new MessageSerializer());
-
         return builder.create().fromJson(s, Message.class);
     }
 
