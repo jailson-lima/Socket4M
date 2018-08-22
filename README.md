@@ -22,7 +22,7 @@ Client socket for interaction with a TCP protocol server.
 ### Information
   - Learn more about issuing events in [Events4J](https://github.com/theShadow89/Events4J).
   - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
-  - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
+  - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
   - Read about [SocketServer](https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html).
   - **Java versions smaller than 8 are not supported.**
   
