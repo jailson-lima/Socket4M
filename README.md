@@ -183,6 +183,6 @@ client.on("error", args -> {
 });
 ```
   
-## Precisando de ajuda?
-  - Meu [Discord](https://discordapp.com) NT#2374
-  - Site [MotoNetwork](https://motocrack.net)
+## Needing help?
+  - My [Discord](https://discordapp.com) NT#2374
+  - Our site [MotoNetwork](https://motocrack.net)
