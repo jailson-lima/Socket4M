@@ -35,13 +35,14 @@ Not yet implemented.
 Client client = new Client();
 
 // Enable the "debug" option to see details on the console.
-utilities.setDebug(true);
+client.setDebug(true);
 
 // Set a "Logger" by default to be used in the debug.
-utilities.setLogger(yourLogger);
+// if not contains, set to null.
+client.setLogger(yourLogger);
 ```
 
-#### Clinet options
+#### Client options
 This client supports some options that the [Socket] class (https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) contains.
 ```java
 // socket.setKeepAlive(true);
