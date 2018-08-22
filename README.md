@@ -13,8 +13,8 @@ Cliente socket para interação com um servidor de protocolo TCP.
 <dependencies>
     <dependency>
         <groupId>me.devnatan.socket4m</groupId>
-        <artifactId>Socket4M-Client</artifactId>
-        <version>1.0.0</version>
+        <artifactId>Client</artifactId>
+        <version>2.0.2</version>
     </dependency>
 </dependencies>
 ```
