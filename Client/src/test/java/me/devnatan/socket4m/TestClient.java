@@ -1,9 +1,9 @@
-package me.devnatan.socket4m.client;
+package me.devnatan.socket4m;
 
 import com.google.gson.GsonBuilder;
-import me.devnatan.socket4m.client.enums.SocketCloseReason;
-import me.devnatan.socket4m.client.handler.def.DefaultReconnectHandler;
-import me.devnatan.socket4m.client.message.Message;
+import me.devnatan.socket4m.enums.SocketCloseReason;
+import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
+import me.devnatan.socket4m.message.Message;
 
 import java.util.HashMap;
 import java.util.Map;

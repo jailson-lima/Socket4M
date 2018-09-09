@@ -1,10 +1,10 @@
-package me.devnatan.socket4m.client.handler.def;
+package me.devnatan.socket4m.handler.def;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.client.Client;
-import me.devnatan.socket4m.client.enums.SocketOpenReason;
-import me.devnatan.socket4m.client.handler.AbstractHandler;
+import me.devnatan.socket4m.Client;
+import me.devnatan.socket4m.enums.SocketOpenReason;
+import me.devnatan.socket4m.handler.AbstractHandler;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;

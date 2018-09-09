@@ -5,7 +5,8 @@ import lombok.Getter;
 import java.util.*;
 
 /**
- * Event Arguments.The argument of an event.
+ * Event Arguments.
+ * The argument of an event.
  */
 public final class Arguments {
 
@@ -17,8 +18,8 @@ public final class Arguments {
     }
 
     /**
-     * Return {{@link Argument}} where name is {argId}. Return null if
-     * argument not exist
+     * Return {{@link Argument}} where name is {argId}.
+     * Return null if argument not exist
      * @param name argument name used to identify argument
      */
     private Argument get(String name) {

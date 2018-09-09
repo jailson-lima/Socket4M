@@ -1,4 +1,4 @@
-package me.devnatan.socket4m.client.enums;
+package me.devnatan.socket4m.enums;
 
 public enum SocketOpenReason {
 

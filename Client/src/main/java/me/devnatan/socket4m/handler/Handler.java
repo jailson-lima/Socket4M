@@ -1,4 +1,4 @@
-package me.devnatan.socket4m.client.handler;
+package me.devnatan.socket4m.handler;
 
 import java.util.function.Consumer;
 

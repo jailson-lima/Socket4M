@@ -1,12 +1,12 @@
-package me.devnatan.socket4m.client;
+package me.devnatan.socket4m;
 
 import events4j.EventEmitter;
 import events4j.argument.Argument;
 import events4j.argument.Arguments;
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.client.enums.SocketCloseReason;
-import me.devnatan.socket4m.client.handler.def.DefaultReconnectHandler;
+import me.devnatan.socket4m.enums.SocketCloseReason;
+import me.devnatan.socket4m.handler.def.DefaultReconnectHandler;
 
 import java.io.IOException;
 import java.net.SocketException;

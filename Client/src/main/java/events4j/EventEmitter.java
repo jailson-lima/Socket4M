@@ -15,11 +15,10 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class EventEmitter {
 
-    private ConcurrentMap<String,ConcurrentLinkedQueue<EventListener>> listeners = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, ConcurrentLinkedQueue<EventListener>> listeners = new ConcurrentHashMap<>();
 
     /**
      * Register a listener for the event
-     *
      * @param event    event name
      * @param listener function to be executed on emit event
      */
@@ -38,24 +37,21 @@ public class EventEmitter {
 
     /**
      * Register one time listener for an event name.
-     *
      * @param event    event name
      * @param listener function to be executed on emit event
      */
     public EventEmitter once(String event, EventListener listener) {
-        on(event, new EventListener() {
+        return on(event, new EventListener() {
             @Override
             public void call(Arguments args) {
                 listener.call(args);
                 removeListener(event,this);
             }
         });
-        return this;
     }
 
     /**
      * Execute listener associated with event name.
-     *
      * @param event the event name to execute listener
      */
     public EventEmitter emit(String event,Arguments args) {
@@ -67,7 +63,6 @@ public class EventEmitter {
 
     /**
      * Execute listener associated with event name.
-     *
      * @param event the event name to execute listener
      */
     public EventEmitter emit(String event) {
@@ -90,7 +85,6 @@ public class EventEmitter {
 
     /**
      * Return the number of listener for the events
-     *
      * @param event event name
      */
     public int listenerCount(String event) {

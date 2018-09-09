@@ -1,8 +1,8 @@
-package me.devnatan.socket4m.client.handler;
+package me.devnatan.socket4m.handler;
 
 import lombok.Getter;
-import me.devnatan.socket4m.client.Client;
-import me.devnatan.socket4m.client.Worker;
+import me.devnatan.socket4m.Client;
+import me.devnatan.socket4m.Worker;
 
 public abstract class AbstractHandler implements Handler {
 

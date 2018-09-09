@@ -29,7 +29,6 @@ public final class Argument<V> {
         if (o == null || getClass() != o.getClass()) return false;
 
         Argument<?> argument = (Argument<?>) o;
-
         if (name != null ? !name.equals(argument.name) : argument.name != null) return false;
         return value != null ? value.equals(argument.value) : argument.value == null;
     }

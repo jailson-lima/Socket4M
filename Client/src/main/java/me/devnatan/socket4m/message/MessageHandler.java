@@ -1,11 +1,11 @@
-package me.devnatan.socket4m.client.message;
+package me.devnatan.socket4m.message;
 
 import events4j.argument.Argument;
 import events4j.argument.Arguments;
 import lombok.Getter;
 import lombok.Setter;
-import me.devnatan.socket4m.client.Client;
-import me.devnatan.socket4m.client.Worker;
+import me.devnatan.socket4m.Client;
+import me.devnatan.socket4m.Worker;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
