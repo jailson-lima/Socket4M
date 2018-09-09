@@ -1,5 +1,5 @@
 # Socket4M
-Cliente socket para interação com um servidor de protocolo TCP.
+Client socket for interaction with a TCP protocol server.
 
 ### Maven
 ```xml
@@ -13,52 +13,37 @@ Cliente socket para interação com um servidor de protocolo TCP.
 <dependencies>
     <dependency>
         <groupId>me.devnatan.socket4m</groupId>
-        <artifactId>Socket4M-Client</artifactId>
-        <version>1.0.0</version>
+        <artifactId>Client</artifactId>
+        <version>2.0.2</version>
     </dependency>
 </dependencies>
 ```
 
-### Atenção
-Não utilize nada deste repositório sem ter pleno conhecimento do que está fazendo.
-
-### Informações
-  - Saiba mais sobre a emissão de eventos em [Events4J](https://github.com/theShadow89/Events4J).
-  - Leia sobre [cliente Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
-  - Leia sobre [servidor Socket](https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html)
-  - **Versões do Java menores que 8 não são suportadas.**
+### Information
+  - Learn more about issuing events in [Events4J](https://github.com/theShadow89/Events4J).
+  - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
+  - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
+  - **Java versions smaller than 8 are not supported.**
   
-### Assincronismo e processamento paralelo
-Ainda não implementado
+### Asynchronism and parallel processing
+Not yet implemented.
   
-# Exemplos
-### Utilidades
-A classe [Utilities](https://github.com/MotoCrack/Socket4M/blob/master/src/main/java/me/devnatan/socket4m/client/Utilities.java) são utilidades do cliente que podem ser usadas para auxiliamento, incluindo recebimento de mensagens.
+# Examples
 
-```java
-Utilities utilities = new Utilities();
-
-// Ative a opção "debug" para ver detalhes no console.
-utilities.setDebug(true);
-```
-
-Adicione um manipulador de mensagens. 
-O número `100` no `ArrayBlockingQueue` é a capacidade da fila.\
-Outros tipos de `Queue` podem ser usados, saiba mais em [implementações de BlockingQueue](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html).
-```java
-utilities.setMessageHandler(new MessageHandler(new ArrayBlockingQueue<>(100)));
-```
-
-### Cliente
+### Client
 ```java
 Client client = new Client();
 
-// Defina as utilidades do cliente.
-client.setUtilities(utilities);
+// Enable the "debug" option to see details on the console.
+client.setDebug(true);
+
+// Set a "Logger" by default to be used in the debug.
+// if not contains, set to null.
+client.setLogger(yourLogger);
 ```
 
-#### Opções do cliente
-Este cliente suporte algumas opções que a classe [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) tem por padrão.
+#### Client options
+This client supports some options that the [Socket] class (https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) contains.
 ```java
 // socket.setKeepAlive(true);
 client.addOption("KEEP_ALIVE", true);
@@ -67,134 +52,130 @@ client.addOption("KEEP_ALIVE", true);
 client.addOption("OUT_OF_BAND_DATA", true);
 ```
 
-### Manipuladores
-Ainda não há muitos manipuladores disponíveis, somente um.\
-O `DefaultReconnectHandler` pode ser usado para conexões que necessitam de suporte para reconectamento automático.\
-Ele é chamado quando o servidor deixa de responder ao cliente ou fecha a conexão inesperadamente.\
+### Handlers
+There are still not many handlers available, only one.\
+The `DefaultReconnectHandler` can be used for connections that require support for automatic reclosure.\
+It is called when the server stops responding to the client or closes the connection unexpectedly.
 
-**OBS: Na versão 1.0.0 o `DefaultReconnectHandler` não se aplica a conexões terminadas com motivo `TIMEOUT`**
 ```java
-// 3 é o número de tentativas de reconexão
+// 3 is the number of connection attempts
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 3));
 
-// também é possível tentar reconectar somente uma vez não atribuindo nenhum valor
+// you can also try to reconnect only once without assigning any value
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker()));
 
-// ou atribuindo um valor menor ou igual a zero.
+// or by assigning a value less than or equal to zero.
 client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
 
-// a partir da versão 1.0.1 atribuir um "Worker" não é mais necessário no construtor.
+// from version 1.0.1 assigning a "Worker" is no longer required in the constructor.
 client.addHandler(new DefaultReconnectHandler(client));
 client.addHandler(new DefaultReconnectHandler(client, 3));
 ```
 
-### Estabelecendo conexão
-Atribua um endereço de IP ou somente porta.
-É possível atribuir também endereço e porta diretamente na classe.
+### Connecting
+Assign an IP address or port only.
+You can also assign address and port directly in the class.
 
-**A partir da versão 1.0.1 o uso obrigatório da porta foi removido.**
+** As of version 1.0.1 the mandatory use of the port has been removed. **
 ```java
 client.setAddress("127.0.0.1");
 client.setPort(8080);
 ```
 
-Ou atribuir somente no momento da conexão.
+Or assign only at the time of connection.
 ```java
 client.connect("127.0.0.1", 8080);
 ```
 
-Atribuindo `TIMEOUT` a conexão.
+Assigning `TIMEOUT` to the connection.
 ```java
 // 10 segundos
 client.setTimeout(10000);
 
-// ou
+// or
 client.connect("127.0.0.1", 8080, 10000);
 
-// a partir da 1.0.1
+// from 1.0.1
 client.connect(8080, reason -> {
   if(reason == SocketOpenReason.CONNECT) {
-    client.log(Level.INFO, "Conectado pela primeira vez com sucesso.");
+    client.log(Level.INFO, "First connected successfully.");
   }
 
   if(reason == SocketOpenReason.RECONNECT) {
-    client.log(Level.INFO, "Reconectado com sucesso");
+    client.log(Level.INFO, "Reconnected successfully.");
   }
 });
 ```
 
-É possível conectar atribuindo endereço na classe e não no momento da conexão.
+You can connect by assigning address in the class and not at the time of connection.
 ```java
-// Endereço e/ou porta já estão atribuidos na classe.
+// Address and / or port are already assigned in the class.
 client.connect();
 ```
-**OBS: Antes de estabelecer conexão certifique-se que definiu os eventos anteriormente.**
+**NOTE: Before making a connection, make sure you have defined the events previously.**
 
-## Eventos
-### Sintaxe
+## Events
+### Syntax
 ```
-client.on("evento", args -> {
+client.on(event, args -> {
   // ...
 });
 ```
-### Quando conectar
-Método de conexão do cliente na versão 1.0.0
+### When you connect
+Client connection method in version 1.0.0
 ```java
-// disponível somente na 1.0.0
+// available only in 1.0.0
 client.on("connect", args -> {
   SocketOpenReason reason = (SocketOpenReason) args.value("reason");
   if(reason == null); {
-    client.log(Level.INFO, "Primeira conexão com o servidor estabelecida.");
+    client.log(Level.INFO, "First connection to the established server.");
     return;
   }
 
   if(reason == SocketOpenReason.RECONNECT) {
-    client.log(Level.INFO, "Reconectado com o servidor.");
+    client.log(Level.INFO, "Reconnected to the server.");
   }
 });
 ```
-**OBS: A partir da versão 1.0.1 o evento ao conectar foi substituido pelo uso diretamente no método de conexão.**
+**NOTE: As of version 1.0.1 the event when connecting was replaced by use directly in connection method.**
 
-### Quando desconectar
-Este evento não contém argumentos.
+### When to disconnect
+This event has no arguments.
 ```java
 client.on("disconnect", args -> {
   // ...
 });
 
-// disponível somente na 1.0.0
-// ou
+// available only in 1.0.0
+// or
 client.getWorker().on("end", args -> {
 
 });
 ```
 
-### Ao receber mensagem do servidor
+### When receiving message from server
 ```java
 client.on("message", args -> {
   Message message = (Message) args.value("message");
-  client.log(Level.INFO, "Mensagem do servidor:");
-  client.log(Level.INFO, "  - Texto: " + message.getText());
-  client.log(Level.INFO, "  - Mapa: " + message.getValues());
-  client.log(Level.INFO, "  - JSON: " + message.json());
+  client.log(Level.INFO, "Message received from the server: " + message.toJson());
 });
 ```
 
-### Erros na conexão
-Manipuladores de desconexão são chamados aqui, por exemplo:\
-O `DefaultDisconnectHandler` é chamado quando o `SocketCloseReason` deste evento é `RESET`.
+### Connection errors
+Disconnection handlers are called here, for example:\
+The `DefaultDisconnectHandler` is called when the` SocketCloseReason` of this event is `RESET`.
 ```java
 client.on("error", args -> {
   Throwable throwable = (Throwable) arguments.get("throwable").getValue();
   SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
   if(reason == SocketCloseReason.RESET) {
-    // Chamado independentemente de haver um manipulador de reconexão.
-    client.log(Level.SEVERE, "Conexão com o servidor fechada, tentando reconectar...");
+    // Called regardless of whether there is a reconnection handler.
+    client.log(Level.SEVERE, "Connecting to the closed server, trying to reconnect...");
     return;
   }
 
   if(reason == SocketCloseReason.REFUSED) {
-    client.log(Level.SEVERE, "Não foi possível conectar-se ao servidor.");
+    client.log(Level.SEVERE, "Could not connect to server.");
     return;
   }
 
@@ -202,6 +183,6 @@ client.on("error", args -> {
 });
 ```
   
-## Precisando de ajuda?
-  - Meu [Discord](https://discordapp.com) NT#2374
-  - Site [MotoNetwork](https://motocrack.net)
+## Needing help?
+  - My [Discord](https://discordapp.com) NT#2374
+  - Our site [MotoNetwork](https://motocrack.net)
