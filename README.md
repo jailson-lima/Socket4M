@@ -137,11 +137,9 @@ client.write(m);
 ### Handling connection errors
 ```java
 client.on("error", args -> {
-  Throwable throwable = (Throwable) arguments.get("throwable").getValue();
-  SocketCloseReason reason = (SocketCloseReason) arguments.get("reason").getValue();
+  SocketCloseReason reason = (SocketCloseReason) arguments.value("reason");
   if(reason == SocketCloseReason.RESET) {
-    // Called regardless of whether there is a reconnection handler.
-    client.log(Level.SEVERE, "Connecting to the closed server, trying to reconnect...");
+    client.log(Level.SEVERE, "Connecting to the closed server. Try to reconnect!");
     return;
   }
 
@@ -150,7 +148,7 @@ client.on("error", args -> {
     return;
   }
 
-  ((Throwable) arguments.get("throwable").getValue()).printStackTrace();
+  ((Throwable) arguments.value("throwable")).printStackTrace();
 });
 ```
   
