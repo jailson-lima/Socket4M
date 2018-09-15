@@ -24,9 +24,7 @@ Client socket for interaction with a TCP protocol server.
   - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
   - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
   - **Java versions smaller than 8 are not supported.**
-  
-### Asynchronism and parallel processing
-Not yet implemented.
+ 
   
 # Examples
 
@@ -52,26 +50,6 @@ client.addOption("KEEP_ALIVE", true);
 client.addOption("OUT_OF_BAND_DATA", true);
 ```
 
-### Handlers
-There are still not many handlers available, only one.\
-The `DefaultReconnectHandler` can be used for connections that require support for automatic reclosure.\
-It is called when the server stops responding to the client or closes the connection unexpectedly.
-
-```java
-// 3 is the number of connection attempts
-client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 3));
-
-// you can also try to reconnect only once without assigning any value
-client.addHandler(new DefaultReconnectHandler(client, client.getWorker()));
-
-// or by assigning a value less than or equal to zero.
-client.addHandler(new DefaultReconnectHandler(client, client.getWorker(), 0));
-
-// from version 1.0.1 assigning a "Worker" is no longer required in the constructor.
-client.addHandler(new DefaultReconnectHandler(client));
-client.addHandler(new DefaultReconnectHandler(client, 3));
-```
-
 ### Connecting
 Assign an IP address or port only.
 You can also assign address and port directly in the class.
@@ -94,7 +72,10 @@ client.setTimeout(10000);
 
 // or
 client.connect("127.0.0.1", 8080, 10000);
+```
 
+Then
+```java
 // from 1.0.1
 client.connect(8080, reason -> {
   if(reason == SocketOpenReason.CONNECT) {
@@ -107,7 +88,7 @@ client.connect(8080, reason -> {
 });
 ```
 
-You can connect by assigning address in the class and not at the time of connection.
+Or, you can connect by assigning address in the class and not at the time of connection.
 ```java
 // Address and / or port are already assigned in the class.
 client.connect();
@@ -121,23 +102,6 @@ client.on(event, args -> {
   // ...
 });
 ```
-### When you connect
-Client connection method in version 1.0.0
-```java
-// available only in 1.0.0
-client.on("connect", args -> {
-  SocketOpenReason reason = (SocketOpenReason) args.value("reason");
-  if(reason == null); {
-    client.log(Level.INFO, "First connection to the established server.");
-    return;
-  }
-
-  if(reason == SocketOpenReason.RECONNECT) {
-    client.log(Level.INFO, "Reconnected to the server.");
-  }
-});
-```
-**NOTE: As of version 1.0.1 the event when connecting was replaced by use directly in connection method.**
 
 ### When to disconnect
 This event has no arguments.
@@ -145,15 +109,10 @@ This event has no arguments.
 client.on("disconnect", args -> {
   // ...
 });
-
-// available only in 1.0.0
-// or
-client.getWorker().on("end", args -> {
-
-});
 ```
 
-### When receiving message from server
+### Message
+Receive from the server:
 ```java
 client.on("message", args -> {
   Message message = (Message) args.value("message");
@@ -161,9 +120,22 @@ client.on("message", args -> {
 });
 ```
 
-### Connection errors
-Disconnection handlers are called here, for example:\
-The `DefaultDisconnectHandler` is called when the` SocketCloseReason` of this event is `RESET`.
+Sent to the server:
+```java
+// You can use multiple keys and values directly in the constructor without having to create a new map, useful for small messages.
+Message m = new Message<>("one", 1, "two", 2, "three", 3); // Message<String, Integer> or simply Map<String, Object>
+
+/* 
+  to return the json content of the message
+  for example: {"content":{"key":"socket-client", "value":"unknown"}}
+ */
+String json = m.toJson();
+
+// sending the message
+client.write(m);
+```
+
+### Handling connection errors
 ```java
 client.on("error", args -> {
   Throwable throwable = (Throwable) arguments.get("throwable").getValue();
@@ -184,5 +156,5 @@ client.on("error", args -> {
 ```
   
 ## Needing help?
-  - My [Discord](https://discordapp.com) NT#2374
+  - Make a issue.
   - Our site [MotoNetwork](https://motocrack.net)
