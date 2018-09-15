@@ -3,17 +3,51 @@ package me.devnatan.socket4m.message;
 import com.google.gson.GsonBuilder;
 import lombok.Data;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
-public class Message {
+public class Message<K, V> {
 
-    private Map<?, ?> content;
+    private final Map<K, V> content;
 
-    public Message() {}
-
-    public Message(Map<?, ?> content) {
+    public Message(Map<K, V> content) {
         this.content = content;
+    }
+
+    public Message(K k, V v) {
+        content = new LinkedHashMap<>();
+        content.put(k, v);
+    }
+
+    public Message(K k1, V v1, K k2, V v2) {
+        content = new LinkedHashMap<>();
+        content.put(k1, v1);
+        content.put(k2, v2);
+    }
+
+    public Message(K k1, V v1, K k2, V v2, K k3, V v3) {
+        content = new LinkedHashMap<>();
+        content.put(k1, v1);
+        content.put(k2, v2);
+        content.put(k3, v3);
+    }
+
+    public Message(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+        content = new LinkedHashMap<>();
+        content.put(k1, v1);
+        content.put(k2, v2);
+        content.put(k3, v3);
+        content.put(k4, v4);
+    }
+
+    public Message(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+        content = new LinkedHashMap<>();
+        content.put(k1, v1);
+        content.put(k2, v2);
+        content.put(k3, v3);
+        content.put(k4, v4);
+        content.put(k5, v5);
     }
 
     /**

@@ -20,7 +20,7 @@ public class TestClient {
             map.put("key", "socket-client");
             map.put("value", "unknown");
 
-            Message m = new Message(map);
+            Message m = new Message<>("a", 1, "b", 3);
             if(client.write(m)) {
                 client.debug(Level.INFO, "Message " + m.toJson() + " written to the server.");
             } else {

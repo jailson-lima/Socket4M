@@ -116,6 +116,10 @@ public class Client extends EventEmitter {
                 debug(Level.INFO, "Connecting...");
             }
 
+            if(!socket.isConnected()) {
+                debug(Level.SEVERE, "Couldn't connect to the server.");
+            }
+
             worker = new Worker(this, socket);
             messageHandler = new MessageHandler(worker);
             worker.work();
@@ -159,7 +163,7 @@ public class Client extends EventEmitter {
     /**
      * Terminates the connection to the server if it is connected and running.
      */
-    public void end() {
+    public void disconnect() {
         worker.finish();
         debug(Level.INFO, "Disconnected successfully.");
     }
