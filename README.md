@@ -67,7 +67,7 @@ client.connect("127.0.0.1", 8080);
 
 Assigning `TIMEOUT` to the connection.
 ```java
-// 10 segundos
+// 10 seconds
 client.setTimeout(10000);
 
 // or
@@ -76,7 +76,6 @@ client.connect("127.0.0.1", 8080, 10000);
 
 Then
 ```java
-// from 1.0.1
 client.connect(8080, reason -> {
   if(reason == SocketOpenReason.CONNECT) {
     client.log(Level.INFO, "First connected successfully.");
@@ -90,7 +89,7 @@ client.connect(8080, reason -> {
 
 Or, you can connect by assigning address in the class and not at the time of connection.
 ```java
-// Address and / or port are already assigned in the class.
+// Address and or port are already assigned in the class.
 client.connect();
 ```
 **NOTE: Before making a connection, make sure you have defined the events previously.**
