@@ -10,8 +10,7 @@ import java.util.*;
  */
 public final class Arguments {
 
-    @Getter
-    private final List<Argument> arguments;
+    @Getter private final List<Argument> arguments;
 
     private Arguments(List<Argument> arguments) {
         this.arguments = Collections.unmodifiableList(arguments);

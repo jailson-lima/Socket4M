@@ -26,7 +26,7 @@ public class EventEmitter {
         ConcurrentLinkedQueue<EventListener> eventListeners = listeners.get(event);
         if(eventListeners == null){
             eventListeners = new ConcurrentLinkedQueue<>();
-            listeners.put(event,eventListeners);
+            listeners.put(event, eventListeners);
         }
 
         if(!eventListeners.contains(listener)) {

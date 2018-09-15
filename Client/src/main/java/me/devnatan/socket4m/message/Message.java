@@ -1,17 +1,20 @@
 package me.devnatan.socket4m.message;
 
 import com.google.gson.GsonBuilder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Map;
 
+@Data
 public class Message {
 
-    @Getter @Setter private String text;
-    @Getter @Setter private Map<?, ?> values;
+    private Map<?, ?> content;
 
     public Message() {}
+
+    public Message(Map<?, ?> content) {
+        this.content = content;
+    }
 
     /**
      * Serialize the message object to a string in JSON.
@@ -33,19 +36,4 @@ public class Message {
         return builder.create().fromJson(s, Message.class);
     }
 
-    public static <K, V> Message fromMap(Map<K, V> map) {
-        Message message = new Message();
-        message.setValues(map);
-        message.setText(message.toJson());
-
-        return message;
-    }
-
-    public boolean equals(Object other) {
-        if(!(other instanceof Message))
-            return false;
-
-        Message otherMessage = (Message) other;
-        return otherMessage.text.equals(text) && otherMessage.getValues().equals(values);
-    }
 }

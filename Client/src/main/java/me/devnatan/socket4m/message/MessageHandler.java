@@ -2,8 +2,7 @@ package me.devnatan.socket4m.message;
 
 import events4j.argument.Argument;
 import events4j.argument.Arguments;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import me.devnatan.socket4m.Client;
 import me.devnatan.socket4m.Worker;
 
@@ -17,12 +16,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+@Data
 public class MessageHandler {
 
-    @Getter private final Worker worker;
-    @Getter @Setter private BlockingQueue<Message> readQueue;
-    @Getter @Setter private BlockingQueue<Message> writeQueue;
-    @Getter @Setter private int buffer = 2048;
+    private final Worker worker;
+    private BlockingQueue<Message> readQueue;
+    private BlockingQueue<Message> writeQueue;
+    private int buffer = 2048;
 
     public MessageHandler(Worker worker) {
         readQueue = new ArrayBlockingQueue<>(100);

@@ -3,11 +3,10 @@ package me.devnatan.socket4m;
 import events4j.EventEmitter;
 import events4j.argument.Argument;
 import events4j.argument.Arguments;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.enums.SocketOpenReason;
-import me.devnatan.socket4m.handler.Handler;
 import me.devnatan.socket4m.message.Message;
 import me.devnatan.socket4m.message.MessageHandler;
 
@@ -16,31 +15,28 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Client extends EventEmitter {
 
-    @Getter @Setter private String address;
-    @Getter @Setter private int port;
-    @Getter @Setter private int timeout;
-    @Getter @Setter private Worker worker;
-    @Getter private final Map<String, Object> options;
-    @Getter private final List<Handler> handlers;
-    @Getter @Setter private boolean debug;
-    @Getter @Setter private Logger logger;
-    @Getter @Setter private MessageHandler messageHandler;
-    @Getter @Setter private boolean connected;
+    private String address;
+    private int port;
+    private int timeout;
+    private Worker worker;
+    private final Map<String, Object> options;
+    private boolean debug;
+    private Logger logger;
+    private MessageHandler messageHandler;
+    private boolean connected;
 
     public Client() {
         timeout = -1;
         options = new HashMap<>();
-        handlers = new LinkedList<>();
         debug = false;
         connected = false;
     }
@@ -52,22 +48,6 @@ public class Client extends EventEmitter {
      */
     public void addOption(String option, Object value) {
         options.put(option, value);
-    }
-
-    /**
-     * Adds a new handler
-     * @param handler = handler
-     */
-    public void addHandler(Handler handler) {
-        handlers.add(handler);
-    }
-
-    /**
-     * Calls a handler under a condition
-     * @param predicate = the condition
-     */
-    public void handleIf(Predicate<Handler> predicate) {
-        handlers.stream().filter(predicate).findFirst().ifPresent(h -> h.handle(c -> debug(c ? Level.INFO : Level.WARNING, "Handle " + h.getClass().getSimpleName() + " handle " + (c ? "success" : "failed") + ".")));
     }
 
     public void log(Level level, String message) {
