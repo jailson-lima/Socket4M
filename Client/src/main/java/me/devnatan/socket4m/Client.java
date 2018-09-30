@@ -130,9 +130,9 @@ public class Client extends EventEmitter {
                 return;
             }
 
+            debug(Level.INFO, "Connected successfully.");
             connected = true;
             consumer.accept(SocketOpenReason.CONNECT);
-            debug(Level.INFO, "Connected successfully.");
         } catch (ConnectException e) {
             emit("error", new Arguments.Builder()
                     .with(Argument.of("throwable", e))

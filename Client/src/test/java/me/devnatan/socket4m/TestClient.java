@@ -3,8 +3,6 @@ package me.devnatan.socket4m;
 import me.devnatan.socket4m.enums.SocketCloseReason;
 import me.devnatan.socket4m.message.Message;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 public class TestClient {
@@ -16,13 +14,10 @@ public class TestClient {
         client.setTimeout(1000);
         client.setDebug(true);
         client.connect(socketOpenReason -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("key", "socket-client");
-            map.put("value", "unknown");
-
             Message m = new Message<>("a", 1, "b", 3);
             if(client.write(m)) {
                 client.debug(Level.INFO, "Message " + m.toJson() + " written to the server.");
+                client.disconnect();
             } else {
                 client.debug(Level.SEVERE, "Failed to writte message to the server.");
             }
