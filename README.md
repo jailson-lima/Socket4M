@@ -100,6 +100,7 @@ For a client to function it is essential that your worker is defined.
 Worker w = new Worker();
 ```
 <br>
+
 ### Reader
 This is the class that reads internally the messages received from the server.
 ```java
@@ -108,6 +109,7 @@ This is the class that reads internally the messages received from the server.
 w.setReader((new LinkedBlockingQueue<>(), 1024));
 ```
 <br>
+
 ### Writer
 This is the class that handles the messages the client writes and sends them to the server.
 ```java
