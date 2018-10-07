@@ -106,7 +106,7 @@ This is the class that reads internally the messages received from the server.
 ```java
 // any implementation of BlockingQueue.
 // the reader buffer.
-w.setReader((new LinkedBlockingQueue<>(), 1024));
+w.setReader(new Reader(new LinkedBlockingQueue<>(), 1024));
 ```
 <br>
 
@@ -114,7 +114,7 @@ w.setReader((new LinkedBlockingQueue<>(), 1024));
 This is the class that handles the messages the client writes and sends them to the server.
 ```java
 // any implementation of BlockingQueue.
-// the reader buffer.
+// the writer buffer.
 w.setWriter(new Writer(new LinkedBlockingQueue<>(), 1024));
 ```
 <br>
