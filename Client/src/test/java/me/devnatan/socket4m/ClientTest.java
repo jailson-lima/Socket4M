@@ -32,35 +32,36 @@ public class ClientTest {
 
             @Override
             protected void onRead(Message m) {
-
+                client.getLog().info("[Recive] - "+m.toString());
             }
         };
         c.setMessageHandler(messageHandler);
         ConnectionHandler connectionHandler = new ConnectionHandler() {
             @Override
             public void onConnect(Connection c) {
-
+                client.getLog().info("Connected successfully.");
             }
 
             @Override
             public void onDisconnect(Connection c) {
-
+                client.getLog().info("Disconnected successfully.");
             }
 
             @Override
             public void onFailConnect(Connection c) {
-
+                client.getLog().info("could not connect.");
             }
 
             @Override
             public void onReconnect(Connection c) {
-
+                client.getLog().info("Trying to reconnect.");
             }
 
             @Override
             public void onTryConnect(Connection c) {
-
+                client.getLog().info("Try.");
             }
+
         };
         c.setConnectionHandler(connectionHandler);
         Worker w = new Worker();
