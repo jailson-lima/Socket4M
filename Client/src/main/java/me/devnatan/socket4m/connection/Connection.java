@@ -59,6 +59,7 @@ public class Connection {
 
                 if(channel.isConnected()) {
                     if (connectionHandler != null) connectionHandler.handle(reconnectTrying ? "reconnect" : "connect", this);
+                    reconnectTrying = false;
                     return true;
                 }
             }
@@ -87,7 +88,6 @@ public class Connection {
             }
 
             reconnectAttempts++;
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
