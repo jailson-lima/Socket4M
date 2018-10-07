@@ -1,6 +1,7 @@
 package me.devnatan.socket4m.message;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import lombok.Data;
 
 import java.util.LinkedHashMap;
@@ -67,7 +68,11 @@ public class Message<K, V> {
      */
     public static Message fromJson(String s) {
         GsonBuilder builder = new GsonBuilder();
-        return builder.create().fromJson(s, Message.class);
+        try {
+            return builder.create().fromJson(s, Message.class);
+        } catch (JsonSyntaxException e) {
+            return new Message<>("text", s);
+        }
     }
 
 }
