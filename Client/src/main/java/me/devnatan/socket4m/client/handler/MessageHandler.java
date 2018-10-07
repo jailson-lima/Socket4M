@@ -1,6 +1,6 @@
-package me.devnatan.socket4m.handler;
+package me.devnatan.socket4m.client.handler;
 
-import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.client.message.Message;
 
 public abstract class MessageHandler {
 

@@ -1,8 +1,9 @@
-package me.devnatan.socket4m.handler;
+package me.devnatan.socket4m.client.handler;
 
-import me.devnatan.socket4m.Client;
-import me.devnatan.socket4m.Worker;
-import me.devnatan.socket4m.io.IOProcessor;
+import me.devnatan.socket4m.client.Client;
+import me.devnatan.socket4m.client.Worker;
+import me.devnatan.socket4m.client.connection.Connection;
+import me.devnatan.socket4m.client.io.IOProcessor;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -44,8 +45,8 @@ public abstract class ErrorHandler {
     }
 
     /**
-     * Called when there is an error in the {@link me.devnatan.socket4m.connection.Connection}
-     * execution or a {@link me.devnatan.socket4m.Worker} connected to it.
+     * Called when there is an error in the {@link Connection}
+     * execution or a {@link Worker} connected to it.
      * @see IOProcessor#proccess()
      * @see Worker#work()
      * @see Client#connect()

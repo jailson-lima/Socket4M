@@ -1,12 +1,12 @@
-package me.devnatan.socket4m;
+package me.devnatan.socket4m.client;
 
-import me.devnatan.socket4m.connection.Connection;
-import me.devnatan.socket4m.handler.ConnectionHandler;
-import me.devnatan.socket4m.handler.ErrorHandler;
-import me.devnatan.socket4m.handler.MessageHandler;
-import me.devnatan.socket4m.io.Reader;
-import me.devnatan.socket4m.io.Writer;
-import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.client.connection.Connection;
+import me.devnatan.socket4m.client.handler.ConnectionHandler;
+import me.devnatan.socket4m.client.handler.ErrorHandler;
+import me.devnatan.socket4m.client.handler.MessageHandler;
+import me.devnatan.socket4m.client.io.Reader;
+import me.devnatan.socket4m.client.io.Writer;
+import me.devnatan.socket4m.client.message.Message;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

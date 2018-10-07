@@ -1,4 +1,4 @@
-package me.devnatan.socket4m.message;
+package me.devnatan.socket4m.server.data;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;

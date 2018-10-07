@@ -1,4 +1,4 @@
-package me.devnatan.socket4m;
+package me.devnatan.socket4m.client;
 
 import lombok.Data;
 

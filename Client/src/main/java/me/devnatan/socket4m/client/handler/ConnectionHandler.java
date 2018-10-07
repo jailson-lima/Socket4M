@@ -1,6 +1,6 @@
-package me.devnatan.socket4m.handler;
+package me.devnatan.socket4m.client.handler;
 
-import me.devnatan.socket4m.connection.Connection;
+import me.devnatan.socket4m.client.connection.Connection;
 
 public abstract class ConnectionHandler {
 

@@ -1,9 +1,9 @@
-package me.devnatan.socket4m.connection;
+package me.devnatan.socket4m.client.connection;
 
 import lombok.Data;
-import me.devnatan.socket4m.handler.ConnectionHandler;
-import me.devnatan.socket4m.handler.ErrorHandler;
-import me.devnatan.socket4m.handler.MessageHandler;
+import me.devnatan.socket4m.client.handler.ConnectionHandler;
+import me.devnatan.socket4m.client.handler.ErrorHandler;
+import me.devnatan.socket4m.client.handler.MessageHandler;
 
 import java.io.IOException;
 import java.net.ConnectException;
