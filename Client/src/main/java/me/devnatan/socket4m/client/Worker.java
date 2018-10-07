@@ -1,8 +1,8 @@
-package me.devnatan.socket4m;
+package me.devnatan.socket4m.client;
 
 import lombok.Data;
-import me.devnatan.socket4m.io.Reader;
-import me.devnatan.socket4m.io.Writer;
+import me.devnatan.socket4m.client.io.Writer;
+import me.devnatan.socket4m.client.io.Reader;
 
 import java.io.IOException;
 

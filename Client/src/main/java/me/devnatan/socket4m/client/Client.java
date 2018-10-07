@@ -1,8 +1,8 @@
-package me.devnatan.socket4m;
+package me.devnatan.socket4m.client;
 
 import lombok.Data;
-import me.devnatan.socket4m.connection.Connection;
-import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.client.connection.Connection;
+import me.devnatan.socket4m.client.message.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 

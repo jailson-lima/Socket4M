@@ -23,6 +23,7 @@
 
     <modules>
         <module>Client</module>
+        <module>Server</module>
     </modules>
 
     <properties>

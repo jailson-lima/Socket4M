@@ -1,8 +1,8 @@
-package me.devnatan.socket4m.io;
+package me.devnatan.socket4m.client.io;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.devnatan.socket4m.connection.Connection;
+import me.devnatan.socket4m.client.connection.Connection;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;

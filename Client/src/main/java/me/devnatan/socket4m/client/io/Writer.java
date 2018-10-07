@@ -1,7 +1,7 @@
-package me.devnatan.socket4m.io;
+package me.devnatan.socket4m.client.io;
 
-import me.devnatan.socket4m.connection.Connection;
-import me.devnatan.socket4m.message.Message;
+import me.devnatan.socket4m.client.connection.Connection;
+import me.devnatan.socket4m.client.message.Message;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
