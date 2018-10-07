@@ -26,7 +26,7 @@ public abstract class ErrorHandler {
     }
 
     public void handle(Throwable t) {
-        Error r = Error.UNKNOWN;
+        Error r;
         if(t instanceof ConnectException)
             r = Error.CONNECT;
         else if(t instanceof AlreadyConnectedException)
@@ -35,6 +35,10 @@ public abstract class ErrorHandler {
             r = Error.CONNECTION_PENDING;
         else if(t instanceof IOException)
             r = Error.IO;
+        else {
+            r = Error.UNKNOWN;
+            t.printStackTrace();
+        }
 
         on(t, r);
     }

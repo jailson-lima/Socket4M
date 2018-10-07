@@ -14,6 +14,7 @@ public class Connection {
 
     private final String address;
     private final int port;
+    private int timeout;
     private SocketChannel channel;
     private boolean connected;
 
@@ -37,6 +38,7 @@ public class Connection {
         try {
             channel = SocketChannel.open();
             channel.configureBlocking(false);
+            if(timeout > 0) channel.socket().setSoTimeout(timeout);
             channel.connect(new InetSocketAddress(address, port));
 
             while (!channel.finishConnect()) {
@@ -47,11 +49,9 @@ public class Connection {
                 if (connectionHandler != null)
                     connectionHandler.handle("fail", this);
                 return false;
-            }
+            } else {
+                if(connected) return reconnect();
 
-            if (connected && channel.isConnected())
-                return reconnect();
-            else {
                 connected = true;
                 if (connectionHandler != null)
                     connectionHandler.handle("connect", this);
@@ -59,7 +59,7 @@ public class Connection {
             }
         } catch (Exception e) {
             if(errorHandler != null)
-                errorHandler.handle(e.getCause());
+                errorHandler.handle(e);
         } return false;
     }
 

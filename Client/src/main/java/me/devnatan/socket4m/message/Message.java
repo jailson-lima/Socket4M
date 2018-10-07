@@ -56,8 +56,12 @@ public class Message<K, V> {
      * @return = serialized message
      */
     public String toJson() {
-        GsonBuilder builder = new GsonBuilder();
-        return builder.create().toJson(this);
+
+        return new GsonBuilder().setLenient()
+                .enableComplexMapKeySerialization()
+                .disableHtmlEscaping()
+                .create()
+                .toJson(this);
     }
 
     /**

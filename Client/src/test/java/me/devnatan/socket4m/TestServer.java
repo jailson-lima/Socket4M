@@ -34,14 +34,19 @@ public class TestServer {
 
         private final int id;
         private final Socket socket;
+        private boolean hello;
 
         public void run() {
             System.out.println("[C] Connected successfully.");
             try {
-                DataOutputStream os = new DataOutputStream(socket.getOutputStream());
-                os.writeUTF("Hi client =)");
-                os.flush();
-                os.close();
+                while(true) {
+                    if(!hello) {
+                        DataOutputStream os = new DataOutputStream(socket.getOutputStream());
+                        os.writeUTF("Hi client =)");
+                        os.flush();
+                        hello = true;
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
