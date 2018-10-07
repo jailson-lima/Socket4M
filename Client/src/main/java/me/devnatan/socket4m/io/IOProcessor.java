@@ -14,6 +14,11 @@ public abstract class IOProcessor<T> {
     @Getter protected final BlockingQueue<T> queue;
     @Getter protected final int buffer;
 
+    /**
+     * Process the content within the queue
+     * @throws IOException
+     *         If an I/O error occurs
+     */
     public abstract void proccess() throws IOException;
 
 }

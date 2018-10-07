@@ -21,6 +21,18 @@ public class Connection {
     private MessageHandler messageHandler;
     private ErrorHandler errorHandler;
 
+    /**
+     * Open and connect a socket channel.
+     * This channel is pre-configured to be non-blocking
+     *
+     * {@link ConnectionHandler} are called here if they are defined.
+     * The {@link ConnectionHandler#onTryConnect(Connection)} can be called multiple times.
+     *
+     * If the client is already connected instead of calling the
+     * first connection method, the reconnection method is called.
+     *
+     * @return true if the connection has been established completely.
+     */
     public boolean connect() {
         try {
             channel = SocketChannel.open();
@@ -51,6 +63,10 @@ public class Connection {
         } return false;
     }
 
+    /**
+     * Try to reconnect to the server.
+     * @return true if the client reconnects successfully.
+     */
     public boolean reconnect() {
         if(connected && channel.isConnected()) {
             if(connectionHandler != null)
@@ -59,6 +75,10 @@ public class Connection {
         } return false;
     }
 
+    /**
+     * Terminates the connection to the server.
+     * @return true if the connection is terminated.
+     */
     public boolean disconnect() {
         if(connected && channel.isConnected()) {
             try {

@@ -30,7 +30,16 @@ public class Worker implements Runnable {
         }
     }
 
-    public void work() {
+    /**
+     * It makes the worker work.
+     * After that he starts reading {@link Writer} messages
+     * and receiving messages from {@link Reader}.
+     *
+     * It will only be interrupted if the connection connected to it is interrupted.
+     * @throws IllegalStateException
+     *         if the worker is already working.
+     */
+    public void work() throws IllegalStateException {
         if(running)
             throw new IllegalStateException("Worker is already running.");
         else {

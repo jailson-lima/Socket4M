@@ -14,6 +14,13 @@ public class Writer extends IOProcessor<Message> {
         super(connection, queue, buffer);
     }
 
+    /**
+     * Writes a message contained in the message queue to be written to the server,
+     * to the server. This message can not be null.
+     * If a message handler exists, it handles the message.
+     * @throws IOException
+     *         If an I/O error occurs
+     */
     @Override
     public void proccess() throws IOException {
         if(!queue.isEmpty()) {

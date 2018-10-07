@@ -1,134 +1,141 @@
 # Socket4M
-Client socket for interaction with a TCP protocol server.
-
-### Maven
-```xml
-<repositories>
-    <repository>
-        <id>socket4m-repo</id>
-        <url>http://motocrack.net</url>
-    </repository>
-</repositories>
-
-<dependencies>
-    <dependency>
-        <groupId>me.devnatan.socket4m</groupId>
-        <artifactId>Client</artifactId>
-        <version>2.0.2</version>
-    </dependency>
-</dependencies>
-```
-
-### Information
-  - Learn more about issuing events in [Events4J](https://github.com/theShadow89/Events4J).
+This is a project maintained by me [@DevNatan](https://github.com/DevNatan) and [@wiljafor1](https://github.com/wiljafor1).\
+<br>
+We use this in our projects and we will be updating it constantly, if you like the project and want to collaborate, contact us or make a **Pull Request** directly.\
+If you are in doubt about something or want us to change any line of code, make an **Issue** that we will deal with.
+<br>
+  
+## Getting started
+### First:
+  - The current version is 2.1.
   - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
   - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
   - **Java versions smaller than 8 are not supported.**
- 
   
-# Examples
+## Connection
+The `Connection` class is responsible for handling connection methods and loading default client properties such as: ip address, port, and connection handlers, message, and errors.
+<br><br>
+It is also responsible for loading our `SocketChannel` and making changes to it.
+To instantiate a connection object you need the IP address and the client port.
+```java
+Connection c = new Connection("localhost", 4434);
+```
+## Handlers
+Connection, message, and error handlers can be added to your connection object to make it easier to receive messages, error handling, and connections.\
+Currently there are 3 handlers: of errors, messages and connections.
+<br>
+### Error handler
+Use `ErrorHandler` to handle errors easily.
+```java
+class MyErrorHandler extends ErrorHandler {
 
-### Client
+    public void on(Throwable throwable, Error error) {
+        // Error is an enumeration.
+        // Explore this and find out what types of errors you can handle.
+    }
+
+}
+
+c.setErrorHandler(new MyErrorHandler());
+```
+<br>
+
+### Message handler
+Use `MessageHandler` to handle messages that you have sent or messages you have received from the server.
+```java
+class MyMessageHandler extends MessageHandler {
+
+    // Your messages are sent to the server.
+    public void onWrite(Message m) {
+
+    }
+
+    // Messages received from the server.
+    public void onRead(Message m) {
+
+    }
+
+}
+
+c.setMessageHandler(new MyMessageHandler());
+```
+<br>
+
+### Connection handler
+The connection handler is responsible for handling events when you connect, reconnect, disconnect, attempt to connect, or fail to connect.
+```java
+class MyConnectionHandler extends ConnectionHandler {
+
+    public void onConnect(Connection c) {
+        System.out.println("Connected successfully!");
+    }
+
+    public void onDisconnect(Connection c) {
+        System.out.println("Disconnected successfully!");
+    }
+
+    public void onFailConnect(Connection c) {
+        System.out.println("Failed to connect to the server.");
+    }
+
+    public void onReconnect(Connection c) {
+
+    }
+
+    public void onTryConnect(Connection c) {
+    
+    }
+
+}
+
+c.setConnectionHandler(new MyConnectionHandler());
+```
+<br>
+
+## Worker
+The `Worker` is the heart of our client, it is he who reads the` Reader` messages or writes messages to the `Writer` of the client.\
+It is running in a constant loop, and will only be interrupted if the client connection is interrupted.\
+For a client to function it is essential that your worker is defined.
+```java
+Worker w = new Worker();
+
+// synchronize error handler.
+w.setErrorHandler(c.getErrorHandler());
+```
+<br>
+
+### Reader
+This is the class that reads internally the messages received from the server.
+```java
+// any implementation of BlockingQueue.
+// the reader buffer.
+w.setReader(new Reader(new LinkedBlockingQueue<>(), 1024));
+```
+<br>
+
+### Writer
+This is the class that handles the messages the client writes and sends them to the server.
+```java
+// any implementation of BlockingQueue.
+// the writer buffer.
+w.setWriter(new Writer(new LinkedBlockingQueue<>(), 1024));
+```
+<br>
+
+## Client
+After defining your worker, handlers, reader, writer, connection and other properties, only the client is missing.
 ```java
 Client client = new Client();
-
-// Enable the "debug" option to see details on the console.
-client.setDebug(true);
-
-// Set a "Logger" by default to be used in the debug.
-// if not contains, set to null.
-client.setLogger(yourLogger);
+client.setConnection(c);
+client.setWorker(w);
 ```
 
-#### Client options
-This client supports some options that the [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) class contains.
+### Client methods
+Their name is already self-explanatory.
 ```java
-// socket.setKeepAlive(true);
-client.addOption("KEEP_ALIVE", true);
-
-// socket.setOOBInline(true);
-client.addOption("OUT_OF_BAND_DATA", true);
-```
-
-### Connecting
-Assign an IP address or port only.
-You can also assign address and port directly in the class.
-```java
-client.setAddress("127.0.0.1");
-client.setPort(8080);
-```
-
-Or assign only at the time of connection.
-```java
-client.connect("127.0.0.1", 8080);
-```
-
-Assigning **TIMEOUT** to the connection.
-```java
-// 10 seconds
-client.setTimeout(10000);
-
-// or
-client.connect("127.0.0.1", 8080, 10000);
-```
-
-Then connect.
-```java
-client.connect(8080, reason -> {
-  if(reason == SocketOpenReason.CONNECT) {
-    client.log(Level.INFO, "First connected successfully.");
-  }
-
-  if(reason == SocketOpenReason.RECONNECT) {
-    client.log(Level.INFO, "Reconnected successfully.");
-  }
-});
-```
-
-Or, you can connect by assigning address in the class and not at the time of connection.
-```java
-// Address and or port are already assigned in the class.
 client.connect();
-```
-**NOTE: Before making a connection, make sure you have defined the events previously.**
-
-To finish the connection
-```java
-client.disconnect();
-```
-
-## Events
-### Syntax
-```
-client.on(event, args -> {
-  // ...
-});
-```
-
-### Error
-```java
-client.on("error", args -> {
-  SocketCloseReason reason = (SocketCloseReason) arguments.value("reason");
-  if(reason == SocketCloseReason.RESET) {
-    client.log(Level.SEVERE, "Connecting to the closed server. Try to reconnect!");
-    return;
-  }
-
-  if(reason == SocketCloseReason.REFUSED) {
-    client.log(Level.SEVERE, "Could not connect to server.");
-    return;
-  }
-
-  ((Throwable) arguments.value("throwable")).printStackTrace();
-});
-```
-
-### Message received
-```java
-client.on("message", args -> {
-  Message message = (Message) args.value("message");
-  client.log(Level.INFO, "Message received from the server: " + message.toJson());
-});
+client.disconnect()
+client.reconnect();
 ```
 
 ## Message
@@ -155,9 +162,5 @@ The message
 String json = message.toJson();
 
 // sending the message
-client.write(message);
+client.send(message);
 ```
-  
-## Needing help?
-  - Make a issue.
-  - Our site [MotoNetwork](https://motocrack.net)

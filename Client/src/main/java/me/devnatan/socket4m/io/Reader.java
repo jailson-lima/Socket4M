@@ -14,7 +14,14 @@ public class Reader extends IOProcessor<Message> {
         super(connection, queue, buffer);
     }
 
-    @Override
+    /**
+     * Reads the message contained within the {@link java.io.InputStream} of the connection channel.
+     * A ByteBuffer allocates a specific amount of read capability, this capacity is given as {@link #buffer}.
+     * If a message is found, it will be treated and added to the read queue.
+     * If a message handler exists, it handles the message.
+     * @throws IOException
+     *         If an I/O error occurs
+     */
     public void proccess() throws IOException {
         ByteBuffer bb = ByteBuffer.allocate(buffer);
         StringBuilder sb = new StringBuilder();

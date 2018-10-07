@@ -1,5 +1,9 @@
 package me.devnatan.socket4m.handler;
 
+import me.devnatan.socket4m.Client;
+import me.devnatan.socket4m.Worker;
+import me.devnatan.socket4m.io.IOProcessor;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.nio.channels.AlreadyConnectedException;
@@ -35,6 +39,15 @@ public abstract class ErrorHandler {
         on(t, r);
     }
 
+    /**
+     * Called when there is an error in the {@link me.devnatan.socket4m.connection.Connection}
+     * execution or a {@link me.devnatan.socket4m.Worker} connected to it.
+     * @see IOProcessor#proccess()
+     * @see Worker#work()
+     * @see Client#connect()
+     * @param t = the exception
+     * @param r = the error
+     */
     protected abstract void on(Throwable t, Error r);
 
 }
