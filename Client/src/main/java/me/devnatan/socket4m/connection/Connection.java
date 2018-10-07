@@ -6,6 +6,7 @@ import me.devnatan.socket4m.handler.ErrorHandler;
 import me.devnatan.socket4m.handler.MessageHandler;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 
@@ -38,28 +39,29 @@ public class Connection {
         try {
             channel = SocketChannel.open();
             channel.configureBlocking(false);
-            if(timeout > 0) channel.socket().setSoTimeout(timeout);
+            if (timeout > 0) channel.socket().setSoTimeout(timeout);
             channel.connect(new InetSocketAddress(address, port));
 
             while (!channel.finishConnect()) {
                 if (connectionHandler != null) connectionHandler.handle("try", this);
             }
 
-            if (!channel.isConnected()) {
-                if (connectionHandler != null)
-                    connectionHandler.handle("fail", this);
-                return false;
-            } else {
-                if(connected) return reconnect();
+            if (channel.isConnected()) {
+                if (connected) return reconnect();
 
                 connected = true;
                 if (connectionHandler != null)
                     connectionHandler.handle("connect", this);
                 return true;
             }
+        } catch (ConnectException e) {
+            if (connectionHandler != null)
+                connectionHandler.handle("fail", this);
+            if(errorHandler != null) errorHandler.handle(e);
         } catch (Exception e) {
             if(errorHandler != null)
                 errorHandler.handle(e);
+            connected = false;
         } return false;
     }
 
