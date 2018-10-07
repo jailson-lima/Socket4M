@@ -30,13 +30,12 @@ public class Worker implements Runnable {
         }
     }
 
-    public boolean work() {
+    public void work() {
         if(running)
             throw new IllegalStateException("Worker is already running.");
         else {
             new Thread(this, "Socket4M-Client").start();
             running = true;
-            return true;
         }
     }
 
