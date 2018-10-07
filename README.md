@@ -98,6 +98,9 @@ It is running in a constant loop, and will only be interrupted if the client con
 For a client to function it is essential that your worker is defined.
 ```java
 Worker w = new Worker();
+
+// synchronize error handler.
+w.setErrorHandler(c.getErrorHandler());
 ```
 <br>
 
