@@ -131,11 +131,13 @@ To connect:
 ```java
 client.connect();
 ```
+
 <br>
 To disconnect, if connected:
 ```java
 client.disconnect()
 ```
+
 <br>
 To reconnect:
 ```java
