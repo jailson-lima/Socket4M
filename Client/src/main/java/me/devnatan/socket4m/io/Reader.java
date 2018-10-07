@@ -30,7 +30,6 @@ public class Reader extends IOProcessor<Message> {
             bb.flip();
             sb.append(StandardCharsets.UTF_8.decode(bb));
         }
-
         String s = sb.toString().replace("\u0000\f", "");
         if (s.length() > 0) {
             Message m = Message.fromJson(s);

@@ -33,7 +33,7 @@ public class ClientTest {
 
             @Override
             protected void onRead(Message m) {
-
+                client.getLog().info("[Recive] - "+m.toString());
             }
         };
         c.setMessageHandler(messageHandler);
@@ -60,8 +60,9 @@ public class ClientTest {
 
             @Override
             public void onTryConnect(Connection c) {
-
+                client.getLog().info("Try.");
             }
+
         };
         c.setConnectionHandler(connectionHandler);
         Worker w = new Worker();
