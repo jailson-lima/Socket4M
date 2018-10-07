@@ -17,10 +17,11 @@ public class ClientTest {
     public static void main(String[] args){
         client = new Client();
         Connection c = new Connection("localhost", 4434);
+        c.setTimeout(3000);
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             protected void on(Throwable t, Error r) {
-
+                System.err.println("Error [" + r + "]: " + t);
             }
         };
         c.setErrorHandler(errorHandler);
@@ -39,22 +40,22 @@ public class ClientTest {
         ConnectionHandler connectionHandler = new ConnectionHandler() {
             @Override
             public void onConnect(Connection c) {
-                client.getLog().info("Connected successfully.");
+                System.out.println("Connected.");
             }
 
             @Override
             public void onDisconnect(Connection c) {
-                client.getLog().info("Disconnected successfully.");
+                System.out.println("Disonnected.");
             }
 
             @Override
             public void onFailConnect(Connection c) {
-                client.getLog().info("could not connect.");
+                System.out.println("Failed to connect.");
             }
 
             @Override
             public void onReconnect(Connection c) {
-                client.getLog().info("Trying to reconnect.");
+                System.out.println("Reconnected.");
             }
 
             @Override

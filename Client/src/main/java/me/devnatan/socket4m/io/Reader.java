@@ -5,7 +5,6 @@ import me.devnatan.socket4m.message.Message;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 
@@ -29,9 +28,9 @@ public class Reader extends IOProcessor<Message> {
 
         while ((connection.getChannel().read(bb)) > 0) {
             bb.flip();
-            sb.append(Charset.defaultCharset().decode(bb));
+            sb.append(StandardCharsets.UTF_8.decode(bb));
         }
-        String s = sb.toString().replace("\u0000\t","").replaceAll("\\p{Cntrl}", "");
+        String s = sb.toString().replace("\u0000\f", "");
         if (s.length() > 0) {
             Message m = Message.fromJson(s);
             queue.add(m);
