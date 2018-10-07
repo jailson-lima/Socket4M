@@ -3,7 +3,7 @@ Client socket for interaction with a TCP protocol server.
   
 ## Getting started
 ### First:
-  - Learn more about issuing events in [Events4J](https://github.com/theShadow89/Events4J).
+  - The current version is 2.1.
   - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
   - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
   - **Java versions smaller than 8 are not supported.**
