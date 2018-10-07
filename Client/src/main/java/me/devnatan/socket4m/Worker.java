@@ -44,6 +44,7 @@ public class Worker implements Runnable {
             throw new IllegalStateException("Worker is already running.");
         else {
             new Thread(this, "Socket4M-Client").start();
+            client.getLogger().info("Worker running.");
             running = true;
         }
     }

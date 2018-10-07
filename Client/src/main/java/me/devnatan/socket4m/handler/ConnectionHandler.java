@@ -33,7 +33,7 @@ public abstract class ConnectionHandler {
 
     /**
      * Called when the {@link Connection} terminates an existing connection.
-     * @see Connection#disconnect()
+     * @see Connection#disconnect(boolean)
      * @param c = the connection
      */
     public abstract void onDisconnect(Connection c);
