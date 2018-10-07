@@ -18,6 +18,7 @@ public class Reader extends IOProcessor<Message> {
     public void proccess() throws IOException {
         ByteBuffer bb = ByteBuffer.allocate(buffer);
         StringBuilder sb = new StringBuilder();
+
         while ((connection.getChannel().read(bb)) > 0) {
             bb.flip();
             sb.append(Charset.defaultCharset().decode(bb));
