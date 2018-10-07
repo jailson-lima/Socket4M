@@ -1,14 +1,13 @@
 # Socket4M
 Client socket for interaction with a TCP protocol server.
-
-### Information
+  
+## Getting started
+### First:
   - Learn more about issuing events in [Events4J](https://github.com/theShadow89/Events4J).
   - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
   - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
   - **Java versions smaller than 8 are not supported.**
- 
   
-# Getting started
 ## Connection
 The `Connection` class is responsible for handling connection methods and loading default client properties such as: ip address, port, and connection handlers, message, and errors.
 <br><br>
