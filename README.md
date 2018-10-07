@@ -127,18 +127,11 @@ client.setConnection(c);
 client.setWorker(w);
 ```
 
-To connect
+### Client methods
+Their name is already self-explanatory.
 ```java
 client.connect();
-```
-
-To disconnect, if connected
-```java
 client.disconnect()
-```
-
-To reconnect
-```java
 client.reconnect();
 ```
 
