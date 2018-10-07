@@ -4,10 +4,10 @@ import lombok.Data;
 import me.devnatan.socket4m.connection.Connection;
 
 @Data
-public class ClientV2 {
+public class Client {
 
     private Connection connection;
-    private WorkerV2 worker;
+    private Worker worker;
 
     public boolean connect() {
         if(connection.connect()) {

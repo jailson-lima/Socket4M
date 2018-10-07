@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Example {
 
-    private ClientV2 client;
+    private Client client;
 
     private Example() {
         // SETUP CONNECTION
@@ -22,13 +22,13 @@ public class Example {
         c.setErrorHandler(handleMyErrors());
 
         // SETUP WORKER
-        WorkerV2 w = new WorkerV2();
+        Worker w = new Worker();
         w.setReader(new Reader(c, new LinkedBlockingQueue<>(), 1024));
         w.setWriter(new Writer(c, new LinkedBlockingQueue<>(), 1024));
         w.setErrorHandler(c.getErrorHandler());
 
         // FINISH SETUP
-        client = new ClientV2();
+        client = new Client();
         client.setConnection(c);
         client.setWorker(w);
     }

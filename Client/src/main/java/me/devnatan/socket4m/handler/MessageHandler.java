@@ -8,8 +8,10 @@ public abstract class MessageHandler {
         switch (s) {
             case "read":
                 onRead(m);
+                break;
             case "write":
                 onWrite(m);
+                break;
         }
     }
 

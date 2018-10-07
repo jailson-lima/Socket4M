@@ -8,7 +8,7 @@ import me.devnatan.socket4m.io.Writer;
 import java.io.IOException;
 
 @Data
-public class WorkerV2 implements Runnable {
+public class Worker implements Runnable {
 
     private boolean running;
     private Reader reader;

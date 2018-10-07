@@ -8,14 +8,19 @@ public abstract class ConnectionHandler {
         switch (s) {
             case "connect":
                 onConnect(c);
+                break;
             case "disconnect":
                 onDisconnect(c);
+                break;
             case "fail":
                 onFailConnect(c);
+                break;
             case "reconnect":
                 onReconnect(c);
+                break;
             case "try":
                 onTryConnect(c);
+                break;
         }
     }
 
