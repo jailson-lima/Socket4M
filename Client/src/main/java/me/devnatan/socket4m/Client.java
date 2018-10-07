@@ -51,11 +51,11 @@ public class Client {
     }
 
     /**
-     * @see Connection#disconnect()
+     * @see Connection#disconnect(boolean)
      * @return boolean
      */
     public boolean disconnect() {
-        return connection.disconnect();
+        return connection.disconnect(false);
     }
 
     /**

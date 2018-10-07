@@ -15,13 +15,20 @@ public class Connection {
 
     private final String address;
     private final int port;
+
+    // SOCKET
     private int timeout;
     private SocketChannel channel;
-    private boolean connected;
 
+    // HANDLERS
     private ConnectionHandler connectionHandler;
     private MessageHandler messageHandler;
     private ErrorHandler errorHandler;
+
+    // RECONNECT
+    private boolean reconnectTrying;
+    private int reconnectAttempts;
+    private int reconnectTries = 10;
 
     /**
      * Open and connect a socket channel.
@@ -37,31 +44,32 @@ public class Connection {
      */
     public boolean connect() {
         try {
-            channel = SocketChannel.open();
-            channel.configureBlocking(false);
-            if (timeout > 0) channel.socket().setSoTimeout(timeout);
-            channel.connect(new InetSocketAddress(address, port));
-
-            while (!channel.finishConnect()) {
-                if (connectionHandler != null) connectionHandler.handle("try", this);
+            if(channel == null || !channel.isOpen()) {
+                channel = SocketChannel.open();
+                channel.configureBlocking(false);
+                if (timeout > 0) channel.socket().setSoTimeout(timeout);
             }
 
-            if (channel.isConnected()) {
-                if (connected) return reconnect();
+            if(channel.isOpen()) {
+                channel.connect(new InetSocketAddress(address, port));
 
-                connected = true;
-                if (connectionHandler != null)
-                    connectionHandler.handle("connect", this);
-                return true;
+                while (!channel.finishConnect()) {
+                    if (connectionHandler != null) connectionHandler.handle("try", this);
+                }
+
+                if(channel.isConnected()) {
+                    if (connectionHandler != null) connectionHandler.handle(reconnectTrying ? "reconnect" : "connect", this);
+                    return true;
+                }
             }
         } catch (ConnectException e) {
             if (connectionHandler != null)
                 connectionHandler.handle("fail", this);
-            if(errorHandler != null) errorHandler.handle(e);
+            if (errorHandler != null) errorHandler.handle(e);
+        } catch (IOException e) {
+            reconnect();
         } catch (Exception e) {
-            if(errorHandler != null)
-                errorHandler.handle(e);
-            connected = false;
+            if(errorHandler != null) errorHandler.handle(e);
         } return false;
     }
 
@@ -70,28 +78,41 @@ public class Connection {
      * @return true if the client reconnects successfully.
      */
     public boolean reconnect() {
-        if(connected && channel.isConnected()) {
-            if(connectionHandler != null)
-                connectionHandler.handle("reconnect", this);
-            return true;
-        } return false;
+        do {
+            reconnectTrying = true;
+            if(connect()) {
+                reconnectTrying = false;
+                reconnectAttempts = 0;
+                return true;
+            }
+
+            reconnectAttempts++;
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (reconnectAttempts != reconnectTries);
+        return false;
     }
 
     /**
      * Terminates the connection to the server.
      * @return true if the connection is terminated.
      */
-    public boolean disconnect() {
-        if(connected && channel.isConnected()) {
+    public boolean disconnect(boolean silent) {
+        if(!channel.isOpen())
+            throw new IllegalStateException("Channel must be open to disconnect");
+
+        if(channel.isConnected()) {
             try {
                 channel.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            connected = false;
-            if(connectionHandler != null)
-                connectionHandler.handle("disconnect", this);
+            if(!silent && connectionHandler != null) connectionHandler.handle("disconnect", this);
             return true;
         } return false;
     }

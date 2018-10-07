@@ -20,7 +20,12 @@ public class ClientTest {
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             protected void on(Throwable t, Error r) {
-                client.getLogger().error("Error [" + r + "]", t);
+                if(c.isReconnectTrying() && r == Error.CONNECT) {
+                    client.getLogger().error("Error because is trying to reconnect.");
+                    return;
+                }
+                t.printStackTrace();
+                client.getLogger().error(r.name() + ": " + t);
             }
         };
         c.setErrorHandler(errorHandler);
@@ -58,16 +63,14 @@ public class ClientTest {
             }
 
             @Override
-            public void onTryConnect(Connection c) {
-                client.getLogger().info("Trying to connect...");
-            }
+            public void onTryConnect(Connection c) { }
 
         };
         c.setConnectionHandler(connectionHandler);
         Worker w = new Worker();
-        w.setErrorHandler(errorHandler);
-        w.setReader(new Reader(c,new LinkedBlockingQueue<>(), 1024));
-        w.setWriter(new Writer(c,new LinkedBlockingQueue<>(), 1024));
+        w.setClient(client);
+        w.setReader(new Reader(c, new LinkedBlockingQueue<>(), 1024));
+        w.setWriter(new Writer(c, new LinkedBlockingQueue<>(), 1024));
         client.setConnection(c);
         client.setWorker(w);
         client.connect();
