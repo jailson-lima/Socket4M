@@ -41,7 +41,7 @@ client.setLogger(yourLogger);
 ```
 
 #### Client options
-This client supports some options that the [Socket] class (https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) contains.
+This client supports some options that the [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html) class contains.
 ```java
 // socket.setKeepAlive(true);
 client.addOption("KEEP_ALIVE", true);
@@ -53,8 +53,6 @@ client.addOption("OUT_OF_BAND_DATA", true);
 ### Connecting
 Assign an IP address or port only.
 You can also assign address and port directly in the class.
-
-** As of version 1.0.1 the mandatory use of the port has been removed. **
 ```java
 client.setAddress("127.0.0.1");
 client.setPort(8080);
@@ -65,7 +63,7 @@ Or assign only at the time of connection.
 client.connect("127.0.0.1", 8080);
 ```
 
-Assigning `TIMEOUT` to the connection.
+Assigning **TIMEOUT** to the connection.
 ```java
 // 10 seconds
 client.setTimeout(10000);
@@ -74,7 +72,7 @@ client.setTimeout(10000);
 client.connect("127.0.0.1", 8080, 10000);
 ```
 
-Then
+Then connect.
 ```java
 client.connect(8080, reason -> {
   if(reason == SocketOpenReason.CONNECT) {
@@ -94,6 +92,11 @@ client.connect();
 ```
 **NOTE: Before making a connection, make sure you have defined the events previously.**
 
+To finish the connection
+```java
+client.disconnect();
+```
+
 ## Events
 ### Syntax
 ```
@@ -102,39 +105,7 @@ client.on(event, args -> {
 });
 ```
 
-### When to disconnect
-This event has no arguments.
-```java
-client.on("disconnect", args -> {
-  // ...
-});
-```
-
-### Message
-Receive from the server:
-```java
-client.on("message", args -> {
-  Message message = (Message) args.value("message");
-  client.log(Level.INFO, "Message received from the server: " + message.toJson());
-});
-```
-
-Sent to the server:
-```java
-// You can use multiple keys and values directly in the constructor without having to create a new map, useful for small messages.
-Message m = new Message<>("one", 1, "two", 2, "three", 3); // Message<String, Integer> or simply Map<String, Object>
-
-/* 
-  to return the json content of the message
-  for example: {"content":{"key":"socket-client", "value":"unknown"}}
- */
-String json = m.toJson();
-
-// sending the message
-client.write(m);
-```
-
-### Handling connection errors
+### Error
 ```java
 client.on("error", args -> {
   SocketCloseReason reason = (SocketCloseReason) arguments.value("reason");
@@ -150,6 +121,41 @@ client.on("error", args -> {
 
   ((Throwable) arguments.value("throwable")).printStackTrace();
 });
+```
+
+### Message received
+```java
+client.on("message", args -> {
+  Message message = (Message) args.value("message");
+  client.log(Level.INFO, "Message received from the server: " + message.toJson());
+});
+```
+
+## Message
+Declaring
+```java
+/*
+    You can use multiple keys and values directly in the constructor without having to create a new map, useful for small messages.
+    The message object is immutable.
+ */
+new Message<>(map);
+new Message<>(k, v);
+new Message<>(k1, v1, k2, v2);
+new Message<>(k1, v1, k2, v2, k3, v3);
+new Message<>(k1, v1, k2, v2, k3, v3, k4, v4);
+new Message<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+```
+
+The message
+```java
+/* 
+    to return the json content of the message
+    for example: {"content":{"key":"socket-client", "value":"unknown"}}
+ */
+String json = message.toJson();
+
+// sending the message
+client.write(message);
 ```
   
 ## Needing help?
