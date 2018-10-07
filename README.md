@@ -116,11 +116,5 @@ The message
 String json = message.toJson();
 
 // sending the message
-client.write(message);
+client.send(message);
 ```
-  
-## Needing help?
-  - Make a issue.
-  
-## Contribuition:
-  - Make a PR.
