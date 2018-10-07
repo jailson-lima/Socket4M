@@ -1,5 +1,9 @@
 # Socket4M
-Client socket for interaction with a TCP protocol server.
+Fast realtime non-blocking Java Socket client.\
+This is a design maintained by me [@DevNatan](https://github.com/DevNatan) and [@wiljafor1](https://github.com/wiljafor1).\
+<br>
+We use this in our projects and we will be updating it constantly, if you like the project and want to collaborate, contact us or make a **Pull Request** directly.\
+If you are in doubt about something or want us to change any line of code, make an **Issue** that we will deal with.
   
 ## Getting started
 ### First:
