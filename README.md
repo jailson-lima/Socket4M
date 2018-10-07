@@ -36,6 +36,7 @@ class MyErrorHandler extends ErrorHandler {
 c.setErrorHandler(new MyErrorHandler());
 ```
 <br>
+
 ### Message handler
 Use `MessageHandler` to handle messages that you have sent or messages you have received from the server.
 ```java
@@ -56,6 +57,7 @@ class MyMessageHandler extends MessageHandler {
 c.setMessageHandler(new MyMessageHandler());
 ```
 <br>
+
 ### Connection handler
 The connection handler is responsible for handling events when you connect, reconnect, disconnect, attempt to connect, or fail to connect.
 ```java
