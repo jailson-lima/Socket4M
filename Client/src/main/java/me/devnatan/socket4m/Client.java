@@ -37,9 +37,11 @@ public class Client {
      */
     public boolean connect() {
         if(connection.connect()) {
+            logger.info("Connected successfully.");
             worker.work();
             return true;
-        } return false;
+        } logger.warn("Failed to connect.");
+        return false;
     }
 
     /**
@@ -47,15 +49,24 @@ public class Client {
      * @return boolean
      */
     public boolean reconnect() {
-        return connection.reconnect();
+        if(connection.reconnect()) {
+            logger.info("Reconnected successfully.");
+            return true;
+        } else logger.warn("Failed to reconnect.");
+        return false;
     }
 
     /**
-     * @see Connection#disconnect()
+     * @see Connection#disconnect(boolean)
      * @return boolean
      */
     public boolean disconnect() {
-        return connection.disconnect();
+        if(connection.disconnect(false)) {
+            logger.info("Disconnected successfully.");
+            return true;
+        } else
+            logger.error("Failed to disconnect.");
+        return false;
     }
 
     /**

@@ -31,19 +31,18 @@ public class TestServer {
 
     @Data
     public static class TestServerClient implements Runnable {
+
         private final int id;
         private final Socket socket;
         private boolean hello;
+
         public void run() {
             System.out.println("[C] Connected successfully.");
             try {
-                while(true) {
-                    if(!hello) {
-                        DataOutputStream os = new DataOutputStream(socket.getOutputStream());
-                        os.writeUTF("Hi client =)");
-                        os.flush();
-                        hello = true;
-                    }
+                if(!hello) {
+                    DataOutputStream os = new DataOutputStream(socket.getOutputStream());
+                    os.writeUTF("Hi client =)");
+                    hello = true;
                 }
             } catch (IOException e) {
                 e.printStackTrace();

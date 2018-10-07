@@ -15,7 +15,16 @@ public abstract class MessageHandler {
         }
     }
 
+    /**
+     * When you send a message to the server.
+     * @param m = the message
+     */
     protected abstract void onWrite(Message m);
+
+    /**
+     * When you receive a message from the server.
+     * @param m = the message
+     */
     protected abstract void onRead(Message m);
 
 }
