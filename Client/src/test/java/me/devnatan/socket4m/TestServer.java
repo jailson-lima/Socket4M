@@ -31,11 +31,9 @@ public class TestServer {
 
     @Data
     public static class TestServerClient implements Runnable {
-
         private final int id;
         private final Socket socket;
         private boolean hello;
-
         public void run() {
             System.out.println("[C] Connected successfully.");
             try {
