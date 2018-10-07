@@ -17,11 +17,10 @@ public class ClientTest {
     public static void main(String[] args){
         client = new Client();
         Connection c = new Connection("localhost", 4434);
-        c.setTimeout(3000);
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             protected void on(Throwable t, Error r) {
-                System.err.println("Error [" + r + "]: " + t);
+                client.getLogger().error("Error [" + r + "]", t);
             }
         };
         c.setErrorHandler(errorHandler);
@@ -33,34 +32,34 @@ public class ClientTest {
 
             @Override
             protected void onRead(Message m) {
-                client.getLog().info("[Recive] - "+m.toString());
+                client.getLogger().info("Message: " + m.toJson());
             }
         };
         c.setMessageHandler(messageHandler);
         ConnectionHandler connectionHandler = new ConnectionHandler() {
             @Override
             public void onConnect(Connection c) {
-                System.out.println("Connected.");
+                client.getLogger().info("Connected successfully.");
             }
 
             @Override
             public void onDisconnect(Connection c) {
-                System.out.println("Disonnected.");
+                client.getLogger().info("Disconnected successfully.");
             }
 
             @Override
             public void onFailConnect(Connection c) {
-                System.out.println("Failed to connect.");
+                client.getLogger().warn("Couldn't connect to the server.");
             }
 
             @Override
             public void onReconnect(Connection c) {
-                System.out.println("Reconnected.");
+                client.getLogger().info("Reconnected successfully.");
             }
 
             @Override
             public void onTryConnect(Connection c) {
-                client.getLog().info("Try.");
+                client.getLogger().info("Trying to connect...");
             }
 
         };
