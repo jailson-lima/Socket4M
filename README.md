@@ -127,19 +127,17 @@ client.setConnection(c);
 client.setWorker(w);
 ```
 
-To connect:
+To connect
 ```java
 client.connect();
 ```
 
-<br>
-To disconnect, if connected:
+To disconnect, if connected
 ```java
 client.disconnect()
 ```
 
-<br>
-To reconnect:
+To reconnect
 ```java
 client.reconnect();
 ```
