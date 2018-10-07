@@ -2,6 +2,7 @@ package me.devnatan.socket4m;
 
 import lombok.Data;
 import me.devnatan.socket4m.connection.Connection;
+import me.devnatan.socket4m.message.Message;
 
 @Data
 public class Client {
@@ -22,6 +23,10 @@ public class Client {
 
     public boolean disconnect() {
         return connection.disconnect();
+    }
+
+    public void send(Message m) {
+        worker.getWriter().getQueue().add(m);
     }
 
 }
