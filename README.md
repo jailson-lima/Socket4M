@@ -90,6 +90,55 @@ class MyConnectionHandler extends ConnectionHandler {
 
 c.setConnectionHandler(new MyConnectionHandler());
 ```
+<br>
+
+## Worker
+The `Worker` is the heart of our client, it is he who reads the` Reader` messages or writes messages to the `Writer` of the client.\
+It is running in a constant loop, and will only be interrupted if the client connection is interrupted.\
+For a client to function it is essential that your worker is defined.
+```java
+Worker w = new Worker();
+```
+<br>
+### Reader
+This is the class that reads internally the messages received from the server.
+```java
+// any implementation of BlockingQueue.
+// the reader buffer.
+w.setReader((new LinkedBlockingQueue<>(), 1024));
+```
+<br>
+### Writer
+This is the class that handles the messages the client writes and sends them to the server.
+```java
+// any implementation of BlockingQueue.
+// the reader buffer.
+w.setWriter(new Writer(new LinkedBlockingQueue<>(), 1024));
+```
+<br>
+
+## Client
+After defining your worker, handlers, reader, writer, connection and other properties, only the client is missing.
+```java
+Client client = new Client();
+client.setConnection(c);
+client.setWorker(w);
+```
+
+To connect:
+```java
+client.connect();
+```
+<br>
+To disconnect, if connected:
+```java
+client.disconnect()
+```
+<br>
+To reconnect:
+```java
+client.reconnect();
+```
 
 ## Message
 Declaring
