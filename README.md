@@ -141,10 +141,6 @@ client.reconnect();
 ## Message
 Declaring
 ```java
-/*
-    You can use multiple keys and values directly in the constructor without having to create a new map, useful for small messages.
-    The message object is immutable.
- */
 new Message<>(map); // Map<String, Object>
 ```
 
