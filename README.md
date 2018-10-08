@@ -1,5 +1,5 @@
 # Socket4M
-This is a project maintained by me [@DevNatan](https://github.com/DevNatan) and [@wiljafor1](https://github.com/wiljafor1).\
+This is a project maintained by me [@DevNatan](https://github.com/DevNatan), [@wiljafor1](https://github.com/wiljafor1) and [@JPereirax](https://github.com/JPereirax).\
 <br>
 We use this in our projects and we will be updating it constantly, if you like the project and want to collaborate, contact us or make a **Pull Request** directly.\
 If you are in doubt about something or want us to change any line of code, make an **Issue** that we will deal with.
@@ -141,23 +141,22 @@ client.reconnect();
 ## Message
 Declaring
 ```java
-/*
-    You can use multiple keys and values directly in the constructor without having to create a new map, useful for small messages.
-    The message object is immutable.
- */
-new Message<>(map);
-new Message<>(k, v);
-new Message<>(k1, v1, k2, v2);
-new Message<>(k1, v1, k2, v2, k3, v3);
-new Message<>(k1, v1, k2, v2, k3, v3, k4, v4);
-new Message<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+new Message<>(map); // Map<String, Object>
+```
+
+Use a message builder to easily create them.
+```java
+Message m = Message.builder()
+  .with("question", "Github is good?")
+  .with("answer", true)
+  .build();
 ```
 
 The message
 ```java
 /* 
     to return the json content of the message
-    for example: {"content":{"key":"socket-client", "value":"unknown"}}
+    for example: {"question":"Github is good?", "answer":true}
  */
 String json = message.toJson();
 
