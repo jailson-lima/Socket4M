@@ -72,10 +72,10 @@ public class Client {
     /**
      * Adds a message in the message queue to be sent to the server.
      * If the message is null it will not be sent.
-     * @param m = message object
+     * @param message = string object
      */
-    public void send(Message m) {
-        worker.getWriter().getQueue().add(m);
+    public void send(String message) {
+        worker.getWriter().getQueue().add(new Message("text", message));
     }
 
 }

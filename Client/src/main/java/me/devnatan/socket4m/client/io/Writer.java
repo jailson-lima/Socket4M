@@ -31,7 +31,7 @@ public class Writer extends IOProcessor<Message> {
             }
 
             assert connection.getMessageHandler() != null;
-            connection.getMessageHandler().handle("write", queue.poll());
+            connection.getMessageHandler().handle("write", m);
         }
     }
 

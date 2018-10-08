@@ -32,12 +32,12 @@ public class ClientTest {
         MessageHandler messageHandler = new MessageHandler() {
             @Override
             protected void onWrite(Message m) {
-
+                client.getLogger().info("Send: " + m.toJson());
             }
 
             @Override
             protected void onRead(Message m) {
-                client.getLogger().info("Message: " + m.toJson());
+                client.getLogger().info("Recive: " + m.toJson());
             }
         };
         c.setMessageHandler(messageHandler);
@@ -74,6 +74,7 @@ public class ClientTest {
         client.setConnection(c);
         client.setWorker(w);
         client.connect();
+        client.send("adoleta");
     }
 
 }
