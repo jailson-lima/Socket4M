@@ -1,5 +1,6 @@
 package me.devnatan.socket4m.client.message;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import lombok.Data;
@@ -10,6 +11,10 @@ import java.util.Map;
 @Data
 public class Message {
 
+    private final Gson gson = new GsonBuilder()
+            .enableComplexMapKeySerialization()
+            .disableHtmlEscaping()
+            .create();
     private final Map<String, Object> content;
 
     /**
@@ -17,12 +22,7 @@ public class Message {
      * @return = serialized message
      */
     public String toJson() {
-
-        return new GsonBuilder().setLenient()
-                .enableComplexMapKeySerialization()
-                .disableHtmlEscaping()
-                .create()
-                .toJson(this);
+        return gson.toJson(this);
     }
 
     /**
@@ -32,9 +32,8 @@ public class Message {
      * @return Message
      */
     public static Message fromJson(String s) {
-        GsonBuilder builder = new GsonBuilder();
         try {
-            return builder.create().fromJson(s, Message.class);
+            return new GsonBuilder().create().fromJson(s, Message.class);
         } catch (JsonSyntaxException e) {
             return Message.builder()
                     .with("text", s)
