@@ -1,8 +1,8 @@
 package me.devnatan.socket4m.client;
 
 import lombok.Data;
-import me.devnatan.socket4m.client.io.Writer;
 import me.devnatan.socket4m.client.io.Reader;
+import me.devnatan.socket4m.client.io.Writer;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class Worker implements Runnable {
             if(client.getConnection().disconnect(true)) {
                 if (client.getConnection().getErrorHandler() != null)
                     client.getConnection().getErrorHandler().handle(e);
-                if(client.reconnect()) run();
+                if(client.isAutoReconnect() && client.reconnect()) run();
             }
         }
     }

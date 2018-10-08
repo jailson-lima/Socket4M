@@ -14,6 +14,7 @@ public class Client {
     private Connection connection;
     private Worker worker;
     private Logger logger = Logger.getLogger("LogM4");
+    private boolean autoReconnect;
 
     public Client() {
         Properties p = new Properties();
