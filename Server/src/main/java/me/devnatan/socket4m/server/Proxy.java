@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Properties;
@@ -139,6 +140,21 @@ public class Proxy extends Server implements Runnable{
                     }
 
                     @Override
+                    public SocketChannel getChannel() {
+                        if(getSocket().getChannel() == null || !getSocket().getChannel().isOpen()) {
+                            SocketChannel channel = null;
+                            try {
+                                channel = SocketChannel.open();
+                                channel.configureBlocking(false);
+                                return channel;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return null;
+                    }
+
+                    @Override
                     public void sendMessage(String message) throws Throwable {
                         if(this.getSocket() != null){
                             DataOutputStream stream = new DataOutputStream(this.getSocket().getOutputStream());
@@ -150,29 +166,31 @@ public class Proxy extends Server implements Runnable{
 
                     @Override
                     public void reciveMessage() throws Throwable {
-                        ByteBuffer allocate = ByteBuffer.allocate(1024);
-                        StringBuilder builder = new StringBuilder();
-                        if(this.getSocket().getChannel().read(allocate) > 0){
-                            allocate.flip();
-                            builder.append(StandardCharsets.UTF_8.decode(allocate));
+                        if(this.getChannel().isConnected()){
+                            ByteBuffer allocate = ByteBuffer.allocate(1024);
+                            StringBuilder builder = new StringBuilder();
+                            if(this.getChannel().read(allocate) > 0){
+                                allocate.flip();
+                                builder.append(StandardCharsets.UTF_8.decode(allocate));
+                            }
+                            String s = builder.toString().replace("\u0000\f", "");
+                            if (s.length() > 0) {
+                                Message m = Message.fromJson(s);
+                                getLogger().info("[Client "+this.getId()+"] "+m.toJson());
+                                m = null;
+                            }
+                            s =  null;
+                            builder = null;
+                            allocate = null;
                         }
-                        String s = builder.toString().replace("\u0000\f", "");
-                        if (s.length() > 0) {
-                            Message m = Message.fromJson(s);
-                            getLogger().info("[Client "+this.getId()+"] "+m.toJson());
-                            m = null;
-                        }
-                        s =  null;
-                        builder = null;
-                        allocate = null;
                     }
 
                     @Override
                     public void run() {
                         try {
                             this.sendMessage("Welcome client (id "+this.getId()+")");
-                            while (this.getSocket().getChannel() != null){
-                                if(this.getSocket().getChannel().isOpen()){
+                            while (this.getChannel() != null){
+                                if(this.getChannel().isOpen()){
                                     this.reciveMessage();
                                 }
                             }
