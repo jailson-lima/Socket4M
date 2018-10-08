@@ -53,6 +53,6 @@ public abstract class ErrorHandler {
      * @param t = the exception
      * @param r = the error
      */
-    protected abstract void on(Throwable t, Error r);
+    public abstract void on(Throwable t, Error r);
 
 }

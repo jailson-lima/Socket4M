@@ -8,48 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
-public class Message<K, V> {
+public class Message {
 
-    private final Map<K, V> content;
-
-    public Message(Map<K, V> content) {
-        this.content = content;
-    }
-
-    public Message(K k, V v) {
-        content = new LinkedHashMap<>();
-        content.put(k, v);
-    }
-
-    public Message(K k1, V v1, K k2, V v2) {
-        content = new LinkedHashMap<>();
-        content.put(k1, v1);
-        content.put(k2, v2);
-    }
-
-    public Message(K k1, V v1, K k2, V v2, K k3, V v3) {
-        content = new LinkedHashMap<>();
-        content.put(k1, v1);
-        content.put(k2, v2);
-        content.put(k3, v3);
-    }
-
-    public Message(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-        content = new LinkedHashMap<>();
-        content.put(k1, v1);
-        content.put(k2, v2);
-        content.put(k3, v3);
-        content.put(k4, v4);
-    }
-
-    public Message(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-        content = new LinkedHashMap<>();
-        content.put(k1, v1);
-        content.put(k2, v2);
-        content.put(k3, v3);
-        content.put(k4, v4);
-        content.put(k5, v5);
-    }
+    private final Map<String, Object> content;
 
     /**
      * Serialize the message object to a string in JSON.
@@ -75,8 +36,50 @@ public class Message<K, V> {
         try {
             return builder.create().fromJson(s, Message.class);
         } catch (JsonSyntaxException e) {
-            return new Message<>("text", s);
+            return Message.builder()
+                    .with("text", s)
+                    .build();
         }
+    }
+
+    /**
+     * Create a message builder so that messages are easily created from it.
+     * @return Builder
+     */
+    public static Message.Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Self-explanatory
+     */
+    public static class Builder {
+
+        private Map<String, Object> values;
+
+        private Builder() {}
+
+        /**
+         * Adds a key and value to the list of values of the message to be constructed.
+         * @param k = the key
+         * @param v = the value
+         * @return this
+         */
+        public Builder with(String k, Object v) {
+            if(values == null)
+                values = new LinkedHashMap<>();
+            values.put(k, v);
+            return this;
+        }
+
+        /**
+         * Constructs a message from the elements assigned to this constructor.
+         * @return Message
+         */
+        public Message build() {
+            return new Message(values);
+        }
+
     }
 
 }
