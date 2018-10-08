@@ -22,7 +22,7 @@ public class Message {
      * @return = serialized message
      */
     public String toJson() {
-        return gson.toJson(this);
+        return gson.toJson(content);
     }
 
     /**
@@ -33,7 +33,7 @@ public class Message {
      */
     public static Message fromJson(String s) {
         try {
-            return new GsonBuilder().create().fromJson(s, Message.class);
+            return new Message(new GsonBuilder().create().fromJson(s, Map.class));
         } catch (JsonSyntaxException e) {
             return Message.builder()
                     .with("text", s)

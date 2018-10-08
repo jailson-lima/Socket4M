@@ -50,8 +50,8 @@ public abstract class AbstractServer implements Server {
             getConnection().setChannel(ServerSocketChannel.open());
             ServerSocketChannel ssc = (ServerSocketChannel) getConnection().getChannel();
 
-            ssc.bind(getConnection().getSocketAddress());
             ssc.configureBlocking(false);
+            ssc.bind(getConnection().getSocketAddress());
             ssc.register(s, SelectionKey.OP_ACCEPT);
 
             new Thread(new Heart(s, this)).start();
@@ -94,16 +94,19 @@ public abstract class AbstractServer implements Server {
                     while (iter.hasNext()) {
                         SelectionKey sk = iter.next();
 
-                        if (sk.isAcceptable()) {
-                           accept(selector, (ServerSocketChannel) server.getConnection().getChannel());
+                        iter.remove();
+                        if (!sk.isValid()) {
+                            continue;
                         }
 
-                        if (sk.isReadable()) {
+                        if (sk.isAcceptable()) {
+                           accept(selector, (ServerSocketChannel) server.getConnection().getChannel());
+                        } else if (sk.isReadable()) {
                             SocketChannel sc = (SocketChannel) sk.channel();
+                            ClientConnection c = (ClientConnection) getConnectionManager().get(sc);
                             try {
-                                read(bb, sk);
+                                read(bb, sk, c);
                             } catch (IOException e) {
-                                ClientConnection c = (ClientConnection) getConnectionManager().detach(sc);
                                 if(c != null)
                                     getLogger().info("[-] id.: " + c.getId() + " - " + c.getSocketAddress() + " disconnected.");
                                 else
@@ -112,8 +115,6 @@ public abstract class AbstractServer implements Server {
                                 break;
                             }
                         }
-
-                        iter.remove();
                     }
                 }
             } catch (IOException e) {
@@ -121,11 +122,14 @@ public abstract class AbstractServer implements Server {
             }
         }
 
-        private void read(ByteBuffer bb, SelectionKey sk) throws IOException {
+        private void read(ByteBuffer bb, SelectionKey sk, ClientConnection cc) throws IOException {
             SocketChannel sc = (SocketChannel) sk.channel();
             sc.read(bb);
 
-            // String m = new String(bb.array()).trim();
+            String m = new String(bb.array()).trim();
+            if(m.length() > 0) {
+                getLogger().info("[~] id.: " + cc.getId() + " - " + sc.getRemoteAddress() + " message");
+            }
             // sc.close();
 
             bb.flip();

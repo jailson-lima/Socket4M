@@ -15,6 +15,11 @@ public class ConnectionManager {
 
     @Getter private final Set<Connection> connections = new HashSet<>();
 
+    public Connection get(SocketChannel socketChannel) {
+        return connections.stream().filter(c -> c.getChannel().equals(socketChannel))
+                .findFirst().orElse(null);
+    }
+
     public Connection attach(SocketChannel socketChannel) {
         try {
             InetSocketAddress sa = (InetSocketAddress) socketChannel.getRemoteAddress();

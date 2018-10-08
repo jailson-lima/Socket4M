@@ -16,7 +16,7 @@ public class TestClient {
 
     public static void main(String[] args) {
         // CONNECTION
-        Connection c = new Connection("localhost", 4434);
+        Connection c = new Connection("localhost", 4444);
         c.setTimeout(3000);
 
         // HANDLERS
@@ -59,7 +59,12 @@ public class TestClient {
     static class MyConnectionHandler extends ConnectionHandler {
 
         public void onConnect(Connection c) {
-
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            client.send("Hello server!");
         }
 
         public void onDisconnect(Connection c) {

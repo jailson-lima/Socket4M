@@ -4,8 +4,7 @@ import me.devnatan.socket4m.client.connection.Connection;
 import me.devnatan.socket4m.client.message.Message;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 
 public class Writer extends IOProcessor<Message> {
@@ -25,13 +24,13 @@ public class Writer extends IOProcessor<Message> {
     public void proccess() throws IOException {
         if(!queue.isEmpty()) {
             Message m = queue.poll();
-            CharBuffer buffer = CharBuffer.wrap(m.toJson());
-            while (buffer.hasRemaining()) {
-                connection.getChannel().write(Charset.defaultCharset().encode(buffer));
+            byte[] b = m.toJson().getBytes();
+            ByteBuffer bb = ByteBuffer.wrap(b);
+            if(connection.getChannel().write(bb) != -1) {
+                assert connection.getMessageHandler() != null;
+                connection.getMessageHandler().handle("write", m);
             }
-
-            assert connection.getMessageHandler() != null;
-            connection.getMessageHandler().handle("write", m);
+            bb.clear();
         }
     }
 

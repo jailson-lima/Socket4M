@@ -76,11 +76,7 @@ public class Client {
      * @param message = string object
      */
     public void send(Message message) {
-        assert message != null;
-        if(worker.isRunning() &&
-                connection.getChannel().isOpen() &&
-                connection.getChannel().isConnected())
-            worker.getWriter().getQueue().add(message);
+        worker.getWriter().getQueue().add(message);
     }
 
     /**

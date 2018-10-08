@@ -5,7 +5,7 @@ import me.devnatan.socket4m.server.connection.Connection;
 public class ExecutableServer extends AbstractServer {
 
     private ExecutableServer() {
-        super(new Connection(4434));
+        super(new Connection(4444));
     }
 
     @Override
