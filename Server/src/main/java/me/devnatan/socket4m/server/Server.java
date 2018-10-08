@@ -1,35 +1,45 @@
 package me.devnatan.socket4m.server;
 
-import lombok.Data;
-import me.devnatan.socket4m.server.data.Client;
+import me.devnatan.socket4m.server.connection.Connection;
+import me.devnatan.socket4m.server.manager.ConnectionManager;
 import org.apache.log4j.Logger;
-import java.util.Set;
 
-@Data
-public abstract class Server {
+public interface Server {
 
-    public abstract String getName();
+    /**
+     * A name that you want to assign to the server.
+     * @return String
+     */
+    String getName();
 
-    public abstract String getVersion();
+    /**
+     * The Server Connection.
+     * @return Connection
+     */
+    Connection getConnection();
 
-    public abstract Logger getLogger();
+    /**
+     * The server logger.
+     * @return Logger
+     */
+    Logger getLogger();
 
-    public abstract Set<Client> getClients();
+    /**
+     * Server's ConnectionManager.
+     * @return List
+     */
+    ConnectionManager getConnectionManager();
 
-    public abstract Client getClient(int id);
+    /**
+     * Starts the server.
+     * @return true if the server has started correctly.
+     */
+    boolean start();
 
-    public abstract Client getClient(String ip);
-
-    public abstract void kickClient(Client client);
-
-    public abstract void kickClient(Client client, String reason);
-
-    public abstract void kickIp(String ip);
-
-    public abstract void kickIp(String ip, String reason);
-
-    public abstract void start() throws Exception;
-
-    public abstract void stop() throws Exception;
+    /**
+     * Stops the server.
+     * @return true if the server has been disconnected correctly.
+     */
+    boolean stop();
 
 }

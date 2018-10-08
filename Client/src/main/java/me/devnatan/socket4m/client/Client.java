@@ -75,8 +75,19 @@ public class Client {
      * If the message is null it will not be sent.
      * @param message = string object
      */
-    public void send(String message) {
-        worker.getWriter().getQueue().add(new Message("text", message));
+    public void send(Message message) {
+        assert message != null;
+        if(worker.isRunning() &&
+                connection.getChannel().isOpen() &&
+                connection.getChannel().isConnected())
+            worker.getWriter().getQueue().add(message);
+    }
+
+    /**
+     * @see #send(Message)
+     */
+    public void send(String text) {
+        send(Message.builder().with("text", text).build());
     }
 
 }

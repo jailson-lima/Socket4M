@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TestClient {
 
-    private static Client client;
+    private static Client client = new Client();
 
     public static void main(String[] args) {
         // CONNECTION
@@ -31,12 +31,10 @@ public class TestClient {
         w.setWriter(new Writer(c, new LinkedBlockingQueue<>(), 1024));
 
         // SETUP
-        client = new Client();
         client.setConnection(c);
         client.setWorker(w);
         client.setAutoReconnect(false);
         client.connect();
-        client.send("adoleta");
     }
 
     static class MyErrorHandler extends ErrorHandler {
@@ -61,7 +59,7 @@ public class TestClient {
     static class MyConnectionHandler extends ConnectionHandler {
 
         public void onConnect(Connection c) {
-            client.getLogger().info("Connected successfully.");
+
         }
 
         public void onDisconnect(Connection c) {
