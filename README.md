@@ -1,5 +1,5 @@
 # Socket4M
-This is a project maintained by me [@DevNatan](https://github.com/DevNatan) and [@wiljafor1](https://github.com/wiljafor1).\
+This is a project maintained by me [@DevNatan](https://github.com/DevNatan), [@wiljafor1](https://github.com/wiljafor1) and [@JPereirax](https://github.com/JPereirax).\
 <br>
 We use this in our projects and we will be updating it constantly, if you like the project and want to collaborate, contact us or make a **Pull Request** directly.\
 If you are in doubt about something or want us to change any line of code, make an **Issue** that we will deal with.
