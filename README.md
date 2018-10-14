@@ -163,3 +163,13 @@ String json = message.toJson();
 // sending the message
 client.send(message);
 ```
+
+A plain text:
+```java
+client.send("My plain text");
+
+/*
+    the server will get
+    {"text", "My plain text"}  
+*/
+```
