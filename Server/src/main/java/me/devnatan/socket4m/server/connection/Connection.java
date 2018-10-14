@@ -12,6 +12,10 @@ public class Connection {
     private final int port;
     private NetworkChannel channel;
 
+    public String getPrettyAddress() {
+        return (address == null ? "127.0.0.1" : address) + ":" + port;
+    }
+
     public InetSocketAddress getSocketAddress() {
         if(address == null)
             return new InetSocketAddress(port);

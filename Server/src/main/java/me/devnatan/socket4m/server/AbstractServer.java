@@ -1,30 +1,27 @@
 package me.devnatan.socket4m.server;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import me.devnatan.socket4m.server.connection.ClientConnection;
 import me.devnatan.socket4m.server.connection.Connection;
+import me.devnatan.socket4m.server.manager.CommandManager;
 import me.devnatan.socket4m.server.manager.ConnectionManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 
 @Data
 public abstract class AbstractServer implements Server {
 
     protected final Connection connection;
     protected final Logger logger = Logger.getLogger("LogM4");
-    protected final ConnectionManager connectionManager
-            = new ConnectionManager();
+    protected final ConnectionManager connectionManager = new ConnectionManager();
+    protected final CommandManager commandManager = new CommandManager();
+    protected boolean running;
+    protected ServerHeart heart;
 
     public AbstractServer(Connection connection) {
         this.connection = connection;
@@ -35,7 +32,7 @@ public abstract class AbstractServer implements Server {
         p.setProperty("log4j.appender.stdout.layout", "org.apache.log4j.PatternLayout");
         p.setProperty("log4j.appender.stdout.layout.ConversionPattern","[%d{yyyy/MM/dd HH:mm:ss}] [%4p] %m%n");
         p.setProperty("log4j.appender.LogM4", "org.apache.log4j.RollingFileAppender");
-        p.setProperty("log4j.appender.LogM4.File", "client.log");
+        p.setProperty("log4j.appender.LogM4.File", "server.log");
         p.setProperty("log4j.appender.LogM4.MaxFileSize", "100KB");
         p.setProperty("log4j.appender.LogM4.MaxBackupIndex", "1");
         p.setProperty("log4j.appender.LogM4.layout", "org.apache.log4j.PatternLayout");
@@ -47,14 +44,15 @@ public abstract class AbstractServer implements Server {
     public boolean start() {
         try {
             Selector s = Selector.open();
-            getConnection().setChannel(ServerSocketChannel.open());
-            ServerSocketChannel ssc = (ServerSocketChannel) getConnection().getChannel();
+            ServerSocketChannel ssc = ServerSocketChannel.open();
 
-            ssc.configureBlocking(false);
             ssc.bind(getConnection().getSocketAddress());
+            ssc.configureBlocking(false);
             ssc.register(s, SelectionKey.OP_ACCEPT);
-
-            new Thread(new Heart(s, this)).start();
+            connection.setChannel(ssc);
+            running = true;
+            heart = new ServerHeart(s, this);
+            new Thread(heart, "Socket4M-Heart").start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +65,9 @@ public abstract class AbstractServer implements Server {
         ServerSocketChannel ssc = (ServerSocketChannel) getConnection().getChannel();
         if(ssc != null && ssc.isOpen()) {
             try {
+                heart.getSelector().close();
                 ssc.close();
+                running = false;
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,77 +75,6 @@ public abstract class AbstractServer implements Server {
         }
 
         return false;
-    }
-
-    @AllArgsConstructor
-    public class Heart implements Runnable {
-
-        private final Selector selector;
-        private final Server server;
-
-        public void run() {
-            ByteBuffer bb = ByteBuffer.allocate(256);
-
-            try {
-                while (server.getConnection().getChannel().isOpen()) {
-                    selector.select();
-                    Set<SelectionKey> sks = selector.selectedKeys();
-                    Iterator<SelectionKey> iter = sks.iterator();
-                    while (iter.hasNext()) {
-                        SelectionKey sk = iter.next();
-
-                        iter.remove();
-                        if (!sk.isValid()) {
-                            continue;
-                        }
-
-                        if (sk.isAcceptable()) {
-                           accept(selector, (ServerSocketChannel) server.getConnection().getChannel());
-                        } else if (sk.isReadable()) {
-                            SocketChannel sc = (SocketChannel) sk.channel();
-                            ClientConnection c = (ClientConnection) getConnectionManager().get(sc);
-                            try {
-                                read(bb, sk, c);
-                            } catch (IOException e) {
-                                if(c != null)
-                                    getLogger().info("[-] id.: " + c.getId() + " - " + c.getSocketAddress() + " disconnected.");
-                                else
-                                    getLogger().warn("[x] Failed to detach " + sc.getRemoteAddress() + ".");
-                                sc.close();
-                                break;
-                            }
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void read(ByteBuffer bb, SelectionKey sk, ClientConnection cc) throws IOException {
-            SocketChannel sc = (SocketChannel) sk.channel();
-            sc.read(bb);
-
-            String m = new String(bb.array()).trim();
-            if(m.length() > 0) {
-                getLogger().info("[~] id.: " + cc.getId() + " - " + sc.getRemoteAddress() + " message");
-            }
-            // sc.close();
-
-            bb.flip();
-            sc.write(bb);
-            bb.clear();
-        }
-
-        private void accept(Selector s, ServerSocketChannel ssc) throws IOException {
-            SocketChannel sc = ssc.accept();
-            sc.configureBlocking(false);
-            sc.register(s, SelectionKey.OP_READ);
-
-            ClientConnection c = (ClientConnection) connectionManager.attach(sc);
-            getLogger().info("[+] id.: " + c.getId() + " - " + c.getSocketAddress() + " connected.");
-        }
-
     }
 
 }

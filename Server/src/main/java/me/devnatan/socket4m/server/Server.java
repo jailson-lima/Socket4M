@@ -1,6 +1,7 @@
 package me.devnatan.socket4m.server;
 
 import me.devnatan.socket4m.server.connection.Connection;
+import me.devnatan.socket4m.server.manager.CommandManager;
 import me.devnatan.socket4m.server.manager.ConnectionManager;
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,10 @@ public interface Server {
      */
     ConnectionManager getConnectionManager();
 
+    CommandManager getCommandManager();
+
+    ServerHeart getHeart();
+
     /**
      * Starts the server.
      * @return true if the server has started correctly.
@@ -41,5 +46,9 @@ public interface Server {
      * @return true if the server has been disconnected correctly.
      */
     boolean stop();
+
+    boolean isRunning();
+
+    void setRunning(boolean running);
 
 }
