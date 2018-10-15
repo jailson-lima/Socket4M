@@ -1,20 +1,20 @@
 package me.devnatan.socket4m.server.executable;
 
 import lombok.Data;
-import me.devnatan.socket4m.server.AbstractServer;
-import me.devnatan.socket4m.server.Server;
+import me.devnatan.socket4m.server.ExecutableServer;
 import me.devnatan.socket4m.server.command.Command;
 import me.devnatan.socket4m.server.connection.Connection;
 import me.devnatan.socket4m.server.executable.commands.StopCommand;
 import me.devnatan.socket4m.server.manager.CommandManager;
 
+import java.net.InetSocketAddress;
 import java.util.Scanner;
 
 @Data
 public class Core implements Runnable {
 
     private static Core instance;
-    private Server server;
+    private ExecutableServer server;
 
     private void loadCommands() {
         CommandManager cm = server.getCommandManager();
@@ -22,11 +22,7 @@ public class Core implements Runnable {
     }
 
     public void start(int port, Runnable bef) {
-        server = new AbstractServer(new Connection(port)) {
-            public String getName() {
-                return "ExecutableServer";
-            }
-        };
+        server = new ExecutableServer(new Connection(new InetSocketAddress(port)));
 
         // MODULES
         server.getLogger().info("Loading modules...");

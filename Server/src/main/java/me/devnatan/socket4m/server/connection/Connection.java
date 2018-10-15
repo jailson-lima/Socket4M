@@ -8,18 +8,11 @@ import java.nio.channels.NetworkChannel;
 @Data
 public class Connection {
 
-    private String address;
-    private final int port;
+    private final InetSocketAddress address;
     private NetworkChannel channel;
 
-    public String getPrettyAddress() {
-        return (address == null ? "127.0.0.1" : address) + ":" + port;
-    }
-
-    public InetSocketAddress getSocketAddress() {
-        if(address == null)
-            return new InetSocketAddress(port);
-        return new InetSocketAddress(address, port);
+    public String address() {
+        return address.getHostName() + ":" + address.getPort();
     }
 
 }

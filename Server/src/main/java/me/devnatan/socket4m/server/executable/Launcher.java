@@ -28,7 +28,7 @@ public class Launcher {
         Core core = new Core();
         core.start(port, () -> {
             Core.setInstance(core);
-            core.getServer().getLogger().info("Listening on " + core.getServer().getConnection().getPort() + ".");
+            core.getServer().getLogger().info("Listening on " + core.getServer().getConnection().getAddress().getPort() + ".");
         });
     }
 

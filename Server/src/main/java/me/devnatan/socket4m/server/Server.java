@@ -1,17 +1,12 @@
 package me.devnatan.socket4m.server;
 
 import me.devnatan.socket4m.server.connection.Connection;
-import me.devnatan.socket4m.server.manager.CommandManager;
 import me.devnatan.socket4m.server.manager.ConnectionManager;
 import org.apache.log4j.Logger;
 
-public interface Server {
+import java.nio.channels.AsynchronousServerSocketChannel;
 
-    /**
-     * A name that you want to assign to the server.
-     * @return String
-     */
-    String getName();
+public interface Server {
 
     /**
      * The Server Connection.
@@ -26,14 +21,10 @@ public interface Server {
     Logger getLogger();
 
     /**
-     * Server's ConnectionManager.
+     * Server ConnectionManager.
      * @return List
      */
     ConnectionManager getConnectionManager();
-
-    CommandManager getCommandManager();
-
-    ServerHeart getHeart();
 
     /**
      * Starts the server.
@@ -47,8 +38,14 @@ public interface Server {
      */
     boolean stop();
 
+    /**
+     * If the server is running and ready to receive connections.
+     * @return boolean
+     */
     boolean isRunning();
 
-    void setRunning(boolean running);
+    default AsynchronousServerSocketChannel channel() {
+        return (AsynchronousServerSocketChannel) getConnection().getChannel();
+    }
 
 }
