@@ -18,8 +18,12 @@ The `Connection` class is responsible for handling connection methods and loadin
 It is also responsible for loading our `SocketChannel` and making changes to it.
 To instantiate a connection object you need the IP address and the client port.
 ```java
-Connection c = new Connection("localhost", 4434);
+Connection c = new Connection(new InetSocketAddress(4434));
+// or
+Connection c = new Connection(new InetSocketAddres("address", 4434));
 ```
+
+# Client
 ## Handlers
 Connection, message, and error handlers can be added to your connection object to make it easier to receive messages, error handling, and connections.\
 Currently there are 3 handlers: of errors, messages and connections.
@@ -122,22 +126,6 @@ w.setWriter(new Writer(c, new LinkedBlockingQueue<>(), 1024));
 ```
 <br>
 
-## Client
-After defining your worker, handlers, reader, writer, connection and other properties, only the client is missing.
-```java
-Client client = new Client();
-client.setConnection(c);
-client.setWorker(w);
-```
-
-### Client methods
-Their name is already self-explanatory.
-```java
-client.connect();
-client.disconnect()
-client.reconnect();
-```
-
 ## Message
 Declaring
 ```java
@@ -172,4 +160,21 @@ client.send("My plain text");
     the server will get
     {"text", "My plain text"}  
 */
+```
+<br>
+
+## Finishing
+After defining your worker, handlers, reader, writer, connection and other properties, only the client is missing.
+```java
+Client client = new Client();
+client.setConnection(c);
+client.setWorker(w);
+```
+
+### Methods
+Their name is already self-explanatory.
+```java
+client.connect();
+client.disconnect()
+client.reconnect();
 ```
