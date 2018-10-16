@@ -28,15 +28,17 @@ public interface Server {
 
     /**
      * Starts the server.
-     * @return true if the server has started correctly.
+     * @throws  IllegalStateException
+     *          If the server is already running
      */
-    boolean start();
+    void start() throws IllegalStateException;
 
     /**
      * Stops the server.
-     * @return true if the server has been disconnected correctly.
+     * @throws  IllegalStateException
+     *          If the server is not running yet
      */
-    boolean stop();
+    void stop() throws IllegalStateException;
 
     /**
      * If the server is running and ready to receive connections.

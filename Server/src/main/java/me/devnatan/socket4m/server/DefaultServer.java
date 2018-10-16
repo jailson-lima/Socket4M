@@ -8,12 +8,14 @@ import java.nio.channels.NetworkChannel;
 
 public abstract class DefaultServer extends AbstractServer {
 
-    public DefaultServer(Connection connection) {
+    protected DefaultServer(Connection connection) {
         super(connection);
     }
 
-    @Override
-    public boolean start() {
+    public void start() {
+        if(running)
+            throw new IllegalStateException("The server is already running");
+
         try {
             AsynchronousServerSocketChannel assc = AsynchronousServerSocketChannel.open();
             assc.bind(getConnection().getAddress());
@@ -24,12 +26,12 @@ public abstract class DefaultServer extends AbstractServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return false;
     }
 
-    @Override
-    public boolean stop() {
+    public void stop() {
+        if(!running)
+            throw new IllegalStateException("The server is not running yet");
+
         NetworkChannel ch = getConnection().getChannel();
         if(ch != null && ch.isOpen()) {
             try {
@@ -40,8 +42,6 @@ public abstract class DefaultServer extends AbstractServer {
                 e.printStackTrace();
             }
         }
-
-        return running;
     }
 
 }

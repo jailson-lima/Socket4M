@@ -9,7 +9,6 @@ public class ServerHeart implements Runnable {
 
     @Getter private final Server server;
 
-    @Override
     public void run() {
         try {
             server.channel().accept(null, new IncomingHandler(server));
