@@ -8,8 +8,12 @@ If you are in doubt about something or want us to change any line of code, make 
 ## Getting started
 ### First:
   - The current version is 2.1.
-  - Read about [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
-  - Read about [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
+  - Try to read about:
+  * [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
+  * [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
+  * [AsynchronousChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousChannel.html).
+  * [AsynchronousSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousSocketChannel.html).
+  * [AsynchronousServerSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html).
   - **Java versions smaller than 8 are not supported.**
   
 ## Connection
