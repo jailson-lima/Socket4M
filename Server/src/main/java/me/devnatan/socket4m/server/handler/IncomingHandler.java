@@ -39,5 +39,8 @@ public class IncomingHandler implements CompletionHandler<AsynchronousSocketChan
         }
     }
 
-    public void failed(Throwable t, Void v) { }
+    public void failed(Throwable t, Void v) {
+        server.getLogger().info("Error IncomingHandler");
+        t.printStackTrace();
+    }
 }

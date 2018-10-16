@@ -4,7 +4,7 @@ import me.devnatan.socket4m.server.connection.Connection;
 
 import java.io.IOException;
 import java.nio.channels.AsynchronousServerSocketChannel;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.NetworkChannel;
 
 public abstract class DefaultServer extends AbstractServer {
 
@@ -31,11 +31,11 @@ public abstract class DefaultServer extends AbstractServer {
 
     @Override
     public boolean stop() {
-        ServerSocketChannel ssc = (ServerSocketChannel) getConnection().getChannel();
-        if(ssc != null && ssc.isOpen()) {
+        NetworkChannel ch = getConnection().getChannel();
+        if(ch != null && ch.isOpen()) {
             try {
                 heart.getServer().channel().close();
-                ssc.close();
+                ch.close();
                 running = false;
                 return true;
             } catch (IOException e) {

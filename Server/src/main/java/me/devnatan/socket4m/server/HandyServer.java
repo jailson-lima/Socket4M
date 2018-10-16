@@ -7,11 +7,11 @@ import me.devnatan.socket4m.server.manager.CommandManager;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ExecutableServer extends DefaultServer {
+public class HandyServer extends DefaultServer {
 
     protected final CommandManager commandManager = new CommandManager();
 
-    public ExecutableServer(Connection connection) {
+    public HandyServer(Connection connection) {
         super(connection);
     }
 

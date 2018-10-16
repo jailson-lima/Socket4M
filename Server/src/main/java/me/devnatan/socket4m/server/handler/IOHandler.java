@@ -25,7 +25,7 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                 attach.put("action", "write");
 
                 ((AsynchronousSocketChannel) connection.getChannel()).write(bb, attach, this);
-                server.getLogger().info("[~>] " + connection.address() + " (size of " + bb.array().length + " bytes)");
+                server.getLogger().info("[<~] " + connection.address() + " (size of " + bb.array().length + " bytes)");
                 bb.clear();
                 break;
             }
@@ -36,11 +36,16 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                 attach.put("buffer", bb);
 
                 ((AsynchronousSocketChannel) connection.getChannel()).read(bb, attach, this);
-                server.getLogger().info("[<~] " + connection.address() + " (size of " + bb.array().length + " bytes)");
+                server.getLogger().info("[~>] " + connection.address() + " (size of " + bb.array().length + " bytes)");
                 break;
             }
         }
     }
 
-    public void failed(Throwable exc, Map<String, Object> attachment) { }
+    public void failed(Throwable t, Map<String, Object> attach) {
+        if(server.getConnectionManager().detach((AsynchronousSocketChannel) connection.getChannel()) != null) {
+            server.getLogger().info("[<] " + connection.address());
+        } else
+            t.printStackTrace();
+    }
 }
