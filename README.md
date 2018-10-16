@@ -9,8 +9,8 @@ If you are in doubt about something or want us to change any line of code, make 
 ### First:
   - The current version is 2.1.
   - Java versions smaller than 8 are not supported.
-  - ´PR`'s are totally acceptable, contributions are always welcome.
-  - Have some questions, do an `Issue`.
+  - [Pull Requests](https://github.com/DevNatan/Socket4M/pulls) are totally acceptable, contributions are always welcome.
+  - Have some questions, do an [Issue](https://github.com/DevNatan/Socket4M/issues).
   
 ### Try to read about:
   * [Future](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Future.html)
