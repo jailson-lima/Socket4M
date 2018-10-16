@@ -16,12 +16,11 @@ public abstract class DefaultServer extends AbstractServer {
     public boolean start() {
         try {
             AsynchronousServerSocketChannel assc = AsynchronousServerSocketChannel.open();
-
             assc.bind(getConnection().getAddress());
             connection.setChannel(assc);
             running = true;
             heart = new ServerHeart(this);
-            new Thread(heart, "Socket4M-Heart").start();
+            new Thread(heart, "Socket4M-Server").start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,13 +36,12 @@ public abstract class DefaultServer extends AbstractServer {
                 heart.getServer().channel().close();
                 ch.close();
                 running = false;
-                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        return false;
+        return running;
     }
 
 }

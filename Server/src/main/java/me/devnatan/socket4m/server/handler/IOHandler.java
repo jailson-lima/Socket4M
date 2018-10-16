@@ -45,7 +45,6 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
     public void failed(Throwable t, Map<String, Object> attach) {
         if(server.getConnectionManager().detach((AsynchronousSocketChannel) connection.getChannel()) != null) {
             server.getLogger().info("[<] " + connection.address());
-        } else
-            t.printStackTrace();
+        } else server.getLogger().error("An error occurred during read/write", t);
     }
 }
