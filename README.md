@@ -8,14 +8,17 @@ If you are in doubt about something or want us to change any line of code, make 
 ## Getting started
 ### First:
   - The current version is 2.1.
-  - **Java versions smaller than 8 are not supported.**
+  - Java versions smaller than 8 are not supported.
+  - ´PR`'s are totally acceptable, contributions are always welcome.
+  - Have some questions, do an `Issue`.
   
 ### Try to read about:
-  * [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
-  * [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html).
-  * [AsynchronousChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousChannel.html).
-  * [AsynchronousSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousSocketChannel.html).
-  * [AsynchronousServerSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html).
+  * [Future](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Future.html)
+  * [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html)
+  * [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html)
+  * [AsynchronousChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousChannel.html)
+  * [AsynchronousSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousSocketChannel.html)
+  * [AsynchronousServerSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html)
   
 ## Connection
 The `Connection` class is responsible for handling connection methods and loading default client properties such as: ip address, port, and connection handlers, message, and errors.
