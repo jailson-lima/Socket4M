@@ -25,7 +25,7 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                 attach.put("action", "write");
 
                 ((AsynchronousSocketChannel) connection.getChannel()).write(bb, attach, this);
-                server.getLogger().info("[<~] " + connection.address() + " (size of " + bb.array().length + " bytes)");
+                server.getLogger().info("[~>] " + connection.address() + " (size of " + bb.array().length + " bytes)");
                 bb.clear();
                 break;
             }
@@ -35,10 +35,13 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                 attach.put("action", "read");
                 attach.put("buffer", bb);
 
-                ((AsynchronousSocketChannel) connection.getChannel()).read(bb, attach, this);
-                server.getLogger().info("[~>] " + connection.address() + " (size of " + bb.array().length + " bytes)");
+                AsynchronousSocketChannel ch = (AsynchronousSocketChannel) connection.getChannel();
+                ch.read(bb, attach, this);
+                server.getLogger().info("[<~] " + connection.address() + " (size of " + bb.array().length + " bytes)");
                 break;
             }
+            default:
+                server.getLogger().info("[~] Unknown action `" + a +"`");
         }
     }
 

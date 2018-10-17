@@ -2,12 +2,14 @@ package me.devnatan.socket4m.server.executable;
 
 import lombok.Data;
 import me.devnatan.socket4m.server.HandyServer;
-import me.devnatan.socket4m.server.command.Command;
 import me.devnatan.socket4m.server.connection.Connection;
+import me.devnatan.socket4m.server.executable.command.Command;
 import me.devnatan.socket4m.server.executable.commands.StopCommand;
+import me.devnatan.socket4m.server.executable.commands.WriteCommand;
 import me.devnatan.socket4m.server.manager.CommandManager;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.Scanner;
 
 @Data
@@ -19,6 +21,7 @@ public class Core implements Runnable {
     private void loadCommands() {
         CommandManager cm = server.getCommandManager();
         cm.add(new StopCommand());
+        cm.add(new WriteCommand());
     }
 
     public void start(int port, Runnable bef) {
@@ -35,22 +38,24 @@ public class Core implements Runnable {
     }
 
     public void run() {
-        server.getLogger().info("Waiting for connections...");
-        Scanner s = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in).useDelimiter("\\n");
         while(server.isRunning()) {
-            if(s.hasNext()) {
-                String ne = s.next().trim();
+            if(sc.hasNext()) {
+                String ne = sc.next().trim();
                 if(ne.length() > 0) {
-                    Command c = server.getCommandManager().get(ne);
+                    String first = ne.split(" ")[0];
+                    Command c = server.getCommandManager().get(first);
                     if(c == null) {
-                        server.getLogger().info("Command `" + ne + "` not found.");
+                        server.getLogger().info("Command `" + first + "` not found.");
                     } else {
-                        c.execute();
+                        String[] sp = ne.split(" ");
+                        c.execute(!ne.contains(" ") ? new String[0] : Arrays.copyOfRange(sp, 1, sp.length + 1));
                     }
                 }
             }
         }
 
+        sc.close();
         server.getLogger().info("Good bye :*");
     }
 

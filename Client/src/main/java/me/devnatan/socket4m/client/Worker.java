@@ -4,8 +4,6 @@ import lombok.Data;
 import me.devnatan.socket4m.client.io.Reader;
 import me.devnatan.socket4m.client.io.Writer;
 
-import java.io.IOException;
-
 @Data
 public class Worker implements Runnable {
 
@@ -21,7 +19,7 @@ public class Worker implements Runnable {
                 writer.proccess();
                 reader.proccess();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             if(client.getConnection().disconnect(true)) {
                 if (client.getConnection().getErrorHandler() != null)
                     client.getConnection().getErrorHandler().handle(e);
@@ -44,7 +42,6 @@ public class Worker implements Runnable {
             throw new IllegalStateException("Worker is already running.");
         else {
             new Thread(this, "Socket4M-Client").start();
-            client.getLogger().info("Worker running.");
             running = true;
         }
     }

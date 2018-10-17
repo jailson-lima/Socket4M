@@ -8,7 +8,9 @@ import me.devnatan.socket4m.client.handler.MessageHandler;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @Data
 public class Connection {
@@ -18,7 +20,7 @@ public class Connection {
 
     // SOCKET
     private int timeout;
-    private SocketChannel channel;
+    private AsynchronousSocketChannel channel;
 
     // HANDLERS
     private ConnectionHandler connectionHandler;
@@ -44,14 +46,21 @@ public class Connection {
      */
     public boolean connect() {
         try {
-            if(channel == null || !channel.isOpen()) {
-                channel = SocketChannel.open();
-                channel.configureBlocking(false);
-                if (timeout > 0) channel.socket().setSoTimeout(timeout);
+            InetSocketAddress isa = new InetSocketAddress(address, port);
+
+            channel = AsynchronousSocketChannel.open();
+            Future<Void> f = channel.connect(isa);
+            if (timeout > 0) f.get(timeout, TimeUnit.MILLISECONDS);
+            else f.get();
+
+            if (channel.isOpen()) {
+                if (connectionHandler != null) connectionHandler.handle(reconnectTrying ? "reconnect" : "connect", this);
+                reconnectTrying = false;
+                return true;
             }
 
-            if(channel.isOpen()) {
-                channel.connect(new InetSocketAddress(address, port));
+            /* if(channel.isOpen()) {
+                channel.connect(isa);
 
                 while (!channel.finishConnect()) {
                     if (connectionHandler != null) connectionHandler.handle("try", this);
@@ -62,7 +71,7 @@ public class Connection {
                     reconnectTrying = false;
                     return true;
                 }
-            }
+            } */
         } catch (ConnectException e) {
             if (connectionHandler != null)
                 connectionHandler.handle("fail", this);
@@ -103,17 +112,15 @@ public class Connection {
      */
     public boolean disconnect(boolean silent) {
         if(!channel.isOpen())
-            throw new IllegalStateException("Channel must be open to disconnect");
+            throw new IllegalStateException("Channel must be open");
 
-        if(channel.isConnected()) {
-            try {
-                channel.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            channel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            if(!silent && connectionHandler != null) connectionHandler.handle("disconnect", this);
-            return true;
-        } return false;
+        if(!silent && connectionHandler != null) connectionHandler.handle("disconnect", this);
+        return true;
     }
 }

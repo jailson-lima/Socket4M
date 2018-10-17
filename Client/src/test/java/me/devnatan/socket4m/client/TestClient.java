@@ -64,7 +64,6 @@ public class TestClient {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            client.send("Hello server!");
         }
 
         public void onDisconnect(Connection c) {

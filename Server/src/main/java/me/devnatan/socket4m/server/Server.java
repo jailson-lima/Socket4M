@@ -46,6 +46,8 @@ public interface Server {
      */
     boolean isRunning();
 
+    ServerHeart getHeart();
+
     default AsynchronousServerSocketChannel channel() {
         return (AsynchronousServerSocketChannel) getConnection().getChannel();
     }

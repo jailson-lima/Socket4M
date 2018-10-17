@@ -2,17 +2,20 @@ package me.devnatan.socket4m.server.manager;
 
 import lombok.Getter;
 import me.devnatan.socket4m.server.connection.Connection;
+import me.devnatan.socket4m.server.executable.Core;
+import me.devnatan.socket4m.server.handler.IOHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class ConnectionManager {
 
-    @Getter private final Set<Connection> connections = new HashSet<>();
+    @Getter private final Set<Connection> connections = Collections.synchronizedSet(new HashSet<>());
 
     public Connection get(AsynchronousSocketChannel channel) {
         return connections.stream().filter(c -> c.getChannel().equals(channel))
@@ -24,6 +27,7 @@ public class ConnectionManager {
             InetSocketAddress sa = (InetSocketAddress) channel.getRemoteAddress();
             Connection c = new Connection(sa);
             c.setChannel(channel);
+            c.setHandler(new IOHandler(Core.getInstance().getServer(), c));
             if(connections.add(c)) return c;
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,6 +43,23 @@ public class ConnectionManager {
                 return c;
             }
         } return null;
+    }
+
+    public void write(String s) {
+        ByteBuffer bb = ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8));
+        Map<String, Object> attach = new TreeMap<>();
+        attach.put("buffer", bb);
+        attach.put("action", "read");
+
+        CompletableFuture.supplyAsync(() -> {
+            int i = 0;
+            for(Connection c : connections) {
+                ((AsynchronousSocketChannel) c.getChannel()).write(bb, attach, c.getHandler());
+                i++;
+            }
+
+            return i;
+        }).whenComplete((i, e) -> Core.getInstance().getServer().getLogger().info("Written sucessfully to " + i + " client(s)."));
     }
 
 }

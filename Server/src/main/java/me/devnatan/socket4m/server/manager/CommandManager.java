@@ -1,7 +1,7 @@
 package me.devnatan.socket4m.server.manager;
 
 import lombok.Getter;
-import me.devnatan.socket4m.server.command.Command;
+import me.devnatan.socket4m.server.executable.command.Command;
 
 import java.util.LinkedList;
 import java.util.List;
