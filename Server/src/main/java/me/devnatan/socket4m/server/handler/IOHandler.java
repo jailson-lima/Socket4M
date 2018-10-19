@@ -16,12 +16,10 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
     private final Server server;
     private final Connection connection;
 
-    // READ and WRITE TEST
     public void completed(Integer i, Map<String, Object> attach) {
         String a = (String) attach.get("action");
         switch (a) {
             case "read": {
-                server.getLogger().info("[~] Reading...");
                 ByteBuffer bb = (ByteBuffer) attach.get("buffer");
                 bb.flip();
                 attach.put("action", "write");
@@ -32,7 +30,6 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                 break;
             }
             case "write": {
-                server.getLogger().info("[~] Writing...");
                 ByteBuffer bb = ByteBuffer.allocate(1024);
 
                 attach.put("action", "read");
@@ -43,8 +40,6 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
                     server.getLogger().info("[<~] " + connection.address() + " (message " + new String(bb.array()) + ")");
                 } break;
             }
-            default:
-                server.getLogger().info("[~] Unknown action `" + a +"`");
         }
     }
 
