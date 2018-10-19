@@ -34,7 +34,6 @@ public class IOHandler implements CompletionHandler<Integer, Map<String, Object>
             case "write": {
                 server.getLogger().info("[~] Writing...");
                 ByteBuffer bb = ByteBuffer.allocate(1024);
-                server.getLogger().info("[~] Buf content: " + new String(bb.array()));
 
                 attach.put("action", "read");
                 attach.put("buffer", bb);
