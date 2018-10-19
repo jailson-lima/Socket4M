@@ -22,8 +22,8 @@ public class Writer extends IOProcessor<Message> {
     public void proccess() {
         if(!queue.isEmpty()) {
             Message m = queue.poll();
-            byte[] b = m.toJson().getBytes();
-            ByteBuffer bb = ByteBuffer.wrap(b);
+            ByteBuffer bb = ByteBuffer.allocate(buffer);
+            bb.put(m.toJson().getBytes());
             try {
                 if(connection.getChannel().write(bb).get() != -1) {
                     assert connection.getMessageHandler() != null;
@@ -32,7 +32,7 @@ public class Writer extends IOProcessor<Message> {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-            bb.clear();
+            bb.flip();
         }
     }
 

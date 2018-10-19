@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,10 +45,10 @@ public class ConnectionManager {
     }
 
     public void write(String s) {
-        ByteBuffer bb = ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8));
+        ByteBuffer bb = ByteBuffer.wrap(s.getBytes());
         Map<String, Object> attach = new TreeMap<>();
         attach.put("buffer", bb);
-        attach.put("action", "read");
+        attach.put("action", "write");
 
         CompletableFuture.supplyAsync(() -> {
             int i = 0;

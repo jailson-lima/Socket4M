@@ -6,6 +6,7 @@ import me.devnatan.socket4m.client.connection.Connection;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 
 @AllArgsConstructor
 public abstract class IOProcessor<T> {
@@ -19,6 +20,6 @@ public abstract class IOProcessor<T> {
      * @throws IOException
      *         If an I/O error occurs
      */
-    public abstract void proccess() throws IOException;
+    public abstract void proccess() throws IOException, ExecutionException, InterruptedException;
 
 }

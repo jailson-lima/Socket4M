@@ -20,24 +20,17 @@ public class Reader extends IOProcessor<Message> {
      * If a message is found, it will be treated and added to the read queue.
      * If a message handler exists, it handles the message.
      */
-    public void proccess() {
+    public void proccess() throws ExecutionException, InterruptedException {
         ByteBuffer bb = ByteBuffer.allocate(buffer);
         Future<Integer> f = connection.getChannel().read(bb);
-        try {
-            f.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+        f.get();
 
-        bb.flip();
-
-        String s = new String(bb.array()).trim().replace("\u0000\f", "");
+        String s = new String(bb.array());
         if (s.length() > 0) {
-            bb.clear();
             Message m = Message.fromJson(s);
             if(connection.getMessageHandler() != null)
                 connection.getMessageHandler().handle("read", m);
-        }
+        } bb.clear();
     }
 
 }

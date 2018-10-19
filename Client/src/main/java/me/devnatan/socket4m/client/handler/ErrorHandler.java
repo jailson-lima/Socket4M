@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.channels.ConnectionPendingException;
+import java.util.concurrent.ExecutionException;
 
 public abstract class ErrorHandler {
 
@@ -22,20 +23,19 @@ public abstract class ErrorHandler {
 
         CONNECTION_PENDING,
 
-        IO
+        IO,
+
+        EXECUTION
 
     }
 
     public void handle(Throwable t) {
         Error r;
-        if(t instanceof ConnectException)
-            r = Error.CONNECT;
-        else if(t instanceof AlreadyConnectedException)
-            r = Error.ALREADY_CONNECTED;
-        else if(t instanceof ConnectionPendingException)
-            r = Error.CONNECTION_PENDING;
-        else if(t instanceof IOException)
-            r = Error.IO;
+        if (t instanceof ConnectException) r = Error.CONNECT;
+        else if (t instanceof AlreadyConnectedException) r = Error.ALREADY_CONNECTED;
+        else if (t instanceof ConnectionPendingException) r = Error.CONNECTION_PENDING;
+        else if (t instanceof IOException) r = Error.IO;
+        else if (t instanceof ExecutionException) r = Error.EXECUTION;
         else {
             r = Error.UNKNOWN;
             t.printStackTrace();
