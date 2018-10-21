@@ -15,6 +15,12 @@ If you are in doubt about something or want us to change any line of code, make 
         - [Error Handler](#error-handler)
         - [Message Handler](#message-handler)
         - [Connection Handler](#connection-handler)
+    - [Worker](#worker)
+        - [Reader](#reader)
+        - [Writer](#writer)
+    - [Message](#message)
+    - [Finishing](#finishing)
+        - [Methods](#methods)
     
 <br>
   
