@@ -20,6 +20,7 @@ If you are in doubt about something or want us to change any line of code, make 
         - [Writer](#writer)
     - [Message](#message)
     - [Finishing](#finishing)
+        - [Definition](#definition)
         - [Methods](#methods)
     
 <br>
@@ -191,6 +192,7 @@ client.send("My plain text");
 <br>
 
 ## Finishing
+### Definition
 After defining your worker, handlers, reader, writer, connection and other properties, only the client is missing.
 ```java
 Client client = new Client();
