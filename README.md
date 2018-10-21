@@ -6,11 +6,11 @@ If you are in doubt about something or want us to change any line of code, make 
 <br>
 
 **Table of Contents:**
-1. [Getting Started](#getting-started)
+- [Getting Started](#getting-started)
     - [First](#first)
     - [Read about](#read-about)
     - [Connection](#connection)
-2. [Client](#client)
+- [Client](#client)
     - [Handlers](#handlers)
         - [Error Handler](#error-handler)
         - [Message Handler](#message-handler)
