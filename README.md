@@ -12,7 +12,7 @@ If you are in doubt about something or want us to change any line of code, make 
     - [Connection](#connection)
 2. [Client](#client)
     - [Handlers](#handlers)
-            - [Error Handler](#error-handler)
+        - [Error Handler](#error-handler)
     
 <br>
   
