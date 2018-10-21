@@ -7,8 +7,8 @@ If you are in doubt about something or want us to change any line of code, make 
 
 **Table of Contents:**
 1. [Getting Started](#getting-started)
-  - [First](#first)
-  - [Read about](#read-about)
+    - [First](#first)
+    - [Read about](#read-about)
 <br>
   
 ## Getting started
