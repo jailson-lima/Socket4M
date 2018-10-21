@@ -9,6 +9,11 @@ If you are in doubt about something or want us to change any line of code, make 
 1. [Getting Started](#getting-started)
     - [First](#first)
     - [Read about](#read-about)
+    - [Connection](#connection)
+2. [Client](#client)
+    - [Handlers](#handlers)
+            - [Error Handler](#error-handler)
+    
 <br>
   
 ## Getting started
@@ -26,7 +31,7 @@ If you are in doubt about something or want us to change any line of code, make 
   * [AsynchronousSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousSocketChannel.html)
   * [AsynchronousServerSocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html)
   
-## Connection
+### Connection
 The `Connection` class is responsible for handling connection methods and loading default client properties such as: ip address, port, and connection handlers, message, and errors.
 <br><br>
 It is also responsible for loading our `SocketChannel` and making changes to it.
