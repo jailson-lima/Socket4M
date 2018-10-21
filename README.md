@@ -4,9 +4,12 @@ This is a project maintained by me [@DevNatan](https://github.com/DevNatan), [@w
 We use this in our projects and we will be updating it constantly, if you like the project and want to collaborate, contact us or make a **Pull Request** directly.\
 If you are in doubt about something or want us to change any line of code, make an **Issue** that we will deal with.
 <br>
+
 **Table of Contents:**
 1. [Getting Started](#getting-started)
-
+  - [First](#first)
+  - [Read about](#read-about)
+<br>
   
 ## Getting started
 ### First:
@@ -15,7 +18,7 @@ If you are in doubt about something or want us to change any line of code, make 
   - [Pull Requests](https://github.com/DevNatan/Socket4M/pulls) are totally acceptable, contributions are always welcome.
   - Have some questions, do an [Issue](https://github.com/DevNatan/Socket4M/issues).
   
-### Try to read about:
+### Read about:
   * [Future](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Future.html)
   * [Socket](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html)
   * [SocketChannel](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/SocketChannel.html)
